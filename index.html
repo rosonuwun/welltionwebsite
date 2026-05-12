@@ -1,0 +1,760 @@
+
+html
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Welltion – Layanan dokumen dan administrasi profesional. CV, proposal, surat resmi, company profile, dan lebih." />
+  <title>Welltion – Administrative Support</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --navy:#0a0f1e;--blue:#2563eb;--blue-light:#3b82f6;
+      --emerald:#10b981;--emerald-glow:#34d399;
+      --white:#ffffff;--gray-100:#f8fafc;--gray-200:#e2e8f0;
+      --gray-400:#94a3b8;--gray-600:#64748b;--text-dark:#0f172a;
+      --fd:'Sora',sans-serif;--fb:'DM Sans',sans-serif;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:var(--fb);background:var(--white);color:var(--text-dark);overflow-x:hidden}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,15,30,.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06);transition:height .3s}
+    .logo{font-family:var(--fd);font-weight:700;font-size:1.3rem;color:#fff;text-decoration:none;letter-spacing:-.02em}
+    .logo span{color:var(--emerald)}
+    .nav-links{display:flex;align-items:center;gap:1.8rem;list-style:none}
+    .nav-links a{color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:color .2s}
+    .nav-links a:hover{color:#fff}
+    .nav-cta{background:var(--emerald);color:var(--navy)!important;font-weight:600!important;padding:.45rem 1.1rem;border-radius:8px}
+    .nav-cta:hover{background:var(--emerald-glow)!important;box-shadow:0 4px 20px rgba(16,185,129,.35)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+    .hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px}
+    .mob-menu{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(10,15,30,.97);backdrop-filter:blur(20px);padding:2rem 5%;flex-direction:column;gap:1.2rem;z-index:99;border-bottom:1px solid rgba(255,255,255,.06)}
+    .mob-menu.open{display:flex}
+    .mob-menu a{color:rgba(255,255,255,.7);text-decoration:none;font-size:1rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .mob-menu .nav-cta{text-align:center;padding:.8rem;border-radius:10px;color:var(--navy)!important}
+
+    /* HERO */
+    .hero{min-height:100vh;background:linear-gradient(135deg,var(--navy) 0%,#0d1b3e 50%,#071a2e 100%);position:relative;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 5% 80px;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+    .o1{width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,235,.25) 0%,transparent 70%);top:-100px;left:-100px;animation:fl 8s ease-in-out infinite}
+    .o2{width:500px;height:500px;background:radial-gradient(circle,rgba(16,185,129,.2) 0%,transparent 70%);bottom:-50px;right:-50px;animation:fl 10s ease-in-out infinite reverse}
+    .o3{width:300px;height:300px;background:radial-gradient(circle,rgba(59,130,246,.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:po 6s ease-in-out infinite}
+    @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
+    @keyframes po{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
+    .hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse at center,black 20%,transparent 80%)}
+    .hcontent{position:relative;z-index:2;max-width:780px;animation:fu .8s ease both}
+    @keyframes fu{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    .badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:var(--emerald-glow);padding:.4rem 1rem;border-radius:100px;font-size:.82rem;font-weight:500;margin-bottom:1.8rem}
+    .badge::before{content:'';width:6px;height:6px;background:var(--emerald-glow);border-radius:50%;box-shadow:0 0 8px var(--emerald-glow);animation:bk 2s ease-in-out infinite}
+    @keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+    .hero h1{font-family:var(--fd);font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-.03em;margin-bottom:1.4rem}
+    .hl{background:linear-gradient(135deg,var(--blue-light),var(--emerald-glow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hsub{font-size:clamp(1rem,2.5vw,1.2rem);color:rgba(255,255,255,.6);line-height:1.7;max-width:580px;margin:0 auto 2.4rem;font-weight:300}
+    .hact{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--emerald);color:var(--navy);font-family:var(--fd);font-weight:600;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none;transition:all .25s;box-shadow:0 0 30px rgba(16,185,129,.3);cursor:pointer;border:none}
+    .btn-p:hover{background:var(--emerald-glow);transform:translateY(-2px);box-shadow:0 8px 40px rgba(16,185,129,.45)}
+    .btn-s{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.06);color:#fff;font-family:var(--fd);font-weight:500;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none;border:1px solid rgba(255,255,255,.12);transition:all .25s;cursor:pointer}
+    .btn-s:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+    .hstats{display:flex;justify-content:center;gap:3rem;margin-top:4rem;padding-top:3rem;border-top:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+    .stat{text-align:center}
+    .snum{font-family:var(--fd);font-size:2rem;font-weight:700;color:#fff;display:block}
+    .snum span{color:var(--emerald)}
+    .slbl{font-size:.82rem;color:rgba(255,255,255,.45);margin-top:.2rem}
+
+    /* SHARED */
+    section{position:relative}
+    .slabel{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--emerald);margin-bottom:.8rem}
+    .stitle{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.025em;line-height:1.15;margin-bottom:1rem}
+    .ssub{font-size:1.05rem;color:var(--gray-600);line-height:1.7;max-width:560px}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    /* SERVICES */
+    .services{background:var(--gray-100);padding:100px 5%}
+    .svc-hdr{text-align:center;margin-bottom:4rem}
+    .svc-hdr .ssub{margin:0 auto}
+    .svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.5rem;max-width:1200px;margin:0 auto}
+    .svc-card{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:2rem;transition:all .3s;position:relative;overflow:hidden}
+    .svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--emerald));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+    .svc-card:hover{border-color:rgba(16,185,129,.3);box-shadow:0 20px 60px rgba(0,0,0,.08);transform:translateY(-4px)}
+    .svc-card:hover::before{transform:scaleX(1)}
+    .svc-icon{width:48px;height:48px;background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(16,185,129,.1));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.2rem}
+    .svc-card h3{font-family:var(--fd);font-size:1.05rem;font-weight:600;margin-bottom:.5rem}
+    .svc-card p{font-size:.9rem;color:var(--gray-600);line-height:1.6}
+    .svc-tag{display:inline-block;margin-top:1rem;font-size:.75rem;font-weight:500;color:var(--emerald);background:rgba(16,185,129,.08);padding:.25rem .7rem;border-radius:100px}
+    .cv-open-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.8rem;background:var(--blue);color:#fff;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:8px;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+    .cv-open-btn:hover{background:var(--blue-light);transform:translateY(-1px)}
+
+    /* CV MODAL */
+    .modal-ov{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto}
+    .modal-ov.open{display:flex}
+    .modal-box{background:#fff;border-radius:20px;width:100%;max-width:920px;margin:auto;padding:2rem;position:relative;animation:fu .3s ease}
+    .modal-x{position:absolute;top:1rem;right:1rem;background:var(--gray-100);border:none;width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .modal-x:hover{background:var(--gray-200)}
+    .modal-title{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-bottom:.2rem}
+    .modal-sub{font-size:.88rem;color:var(--gray-600);margin-bottom:1.2rem}
+    .tpl-row{display:flex;gap:.6rem;margin-bottom:1.2rem;flex-wrap:wrap}
+    .tpl-btn{padding:.4rem 1rem;border-radius:8px;border:2px solid var(--gray-200);background:#fff;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
+    .tpl-btn.active{border-color:var(--emerald);color:var(--emerald);background:rgba(16,185,129,.06)}
+    .cv-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    @media(max-width:700px){.cv-layout{grid-template-columns:1fr}}
+    .cv-form-col{display:flex;flex-direction:column;gap:.8rem}
+    .fg{display:flex;flex-direction:column;gap:.3rem}
+    .fg label{font-size:.78rem;font-weight:600;color:var(--gray-600)}
+    .fg input,.fg textarea{padding:.6rem .9rem;border:1px solid var(--gray-200);border-radius:8px;font-family:var(--fb);font-size:.87rem;outline:none;transition:border .2s;resize:vertical}
+    .fg input:focus,.fg textarea:focus{border-color:var(--emerald);box-shadow:0 0 0 3px rgba(16,185,129,.1)}
+    .fsec{font-family:var(--fd);font-size:.83rem;font-weight:700;padding:.5rem 0 .1rem;border-top:1px solid var(--gray-200);margin-top:.2rem}
+    .cv-dl-row{display:flex;gap:.7rem;margin-top:.8rem;flex-wrap:wrap}
+    .cv-preview-col{position:sticky;top:1rem}
+    .cv-prev-lbl{font-size:.75rem;font-weight:600;color:var(--gray-400);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem}
+    #cvPrev{width:100%;min-height:380px;border:1px solid var(--gray-200);border-radius:12px;overflow:hidden;background:#fff}
+
+    /* CV TEMPLATES */
+    .tpl-min{font-family:'DM Sans',sans-serif;padding:1.8rem;background:#fff;color:#111;font-size:12px;line-height:1.55}
+    .tpl-min .cn{font-size:22px;font-weight:700;letter-spacing:-.02em;border-bottom:2px solid #111;padding-bottom:5px;margin-bottom:4px}
+    .tpl-min .ct{font-size:10px;color:#555;margin-bottom:12px}
+    .tpl-min .cs{margin-bottom:10px}
+    .tpl-min .cst{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px}
+    .tpl-pro{font-family:'DM Sans',sans-serif;background:#fff;color:#1e293b;font-size:12px;line-height:1.55}
+    .tpl-pro .ch{background:#0a0f1e;color:#fff;padding:1.1rem 1.4rem}
+    .tpl-pro .cn{font-size:20px;font-weight:700}
+    .tpl-pro .ct{font-size:10px;color:rgba(255,255,255,.7);margin-top:2px}
+    .tpl-pro .cb{padding:1.1rem 1.4rem}
+    .tpl-pro .cs{margin-bottom:10px}
+    .tpl-pro .cst{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#10b981;border-bottom:1px solid #e2e8f0;padding-bottom:2px;margin-bottom:4px}
+    .tpl-cre{font-family:'DM Sans',sans-serif;display:grid;grid-template-columns:38% 62%;background:#fff;font-size:12px;line-height:1.55}
+    .tpl-cre .csb{background:#1a2540;color:#fff;padding:1.4rem 1rem}
+    .tpl-cre .cn{font-size:17px;font-weight:700;margin-bottom:3px}
+    .tpl-cre .ct{font-size:10px;color:rgba(255,255,255,.65);margin-bottom:10px}
+    .tpl-cre .csts{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#34d399;margin-top:10px;margin-bottom:3px}
+    .tpl-cre .cm{padding:1.4rem 1.1rem}
+    .tpl-cre .cst{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2563eb;border-bottom:1px solid #e2e8f0;padding-bottom:2px;margin-bottom:4px;margin-top:10px}
+
+    /* HOW */
+    .how{padding:100px 5%;background:#fff}
+    .how-in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+    .steps{display:flex;flex-direction:column;gap:2rem;margin-top:2rem}
+    .step{display:flex;gap:1.2rem;align-items:flex-start}
+    .sn{flex-shrink:0;width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--emerald));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.85rem;font-weight:700;color:#fff}
+    .sb h4{font-family:var(--fd);font-weight:600;margin-bottom:.3rem}
+    .sb p{font-size:.9rem;color:var(--gray-600);line-height:1.6}
+    .dash-card{background:var(--navy);border-radius:20px;padding:1.5rem;border:1px solid rgba(255,255,255,.08);box-shadow:0 40px 80px rgba(0,0,0,.25);position:relative;overflow:hidden}
+    .dash-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 30%,rgba(37,99,235,.12) 0%,transparent 60%);pointer-events:none}
+    .dh{display:flex;align-items:center;gap:.5rem;margin-bottom:1.2rem}
+    .dd{width:10px;height:10px;border-radius:50%}
+    .dd.r{background:#ff5f57}.dd.y{background:#febc2e}.dd.g{background:#28c840}
+    .dt{font-family:var(--fd);font-size:.75rem;color:rgba(255,255,255,.4);margin-left:.5rem}
+    .kg{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem}
+    .kc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem}
+    .kl{font-size:.7rem;color:rgba(255,255,255,.4);margin-bottom:.3rem}
+    .kv{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:#fff}
+    .kv.g{color:var(--emerald-glow)}
+    .kch{font-size:.7rem;color:var(--emerald);margin-top:.2rem}
+    .al{display:flex;flex-direction:column;gap:.6rem}
+    .ai{display:flex;align-items:center;gap:.8rem;padding:.7rem;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.05)}
+    .ad{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .ad.b{background:var(--blue-light);box-shadow:0 0 8px var(--blue-light)}
+    .ad.g{background:var(--emerald);box-shadow:0 0 8px var(--emerald)}
+    .ad.p{background:#a78bfa;box-shadow:0 0 8px #a78bfa}
+    .at{font-size:.78rem;color:rgba(255,255,255,.6);flex:1}
+    .atm{font-size:.7rem;color:rgba(255,255,255,.25)}
+
+    /* PORTFOLIO */
+    .portfolio{background:var(--navy);padding:100px 5%;position:relative;overflow:hidden}
+    .portfolio::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(16,185,129,.08) 0%,transparent 60%),radial-gradient(ellipse at 20% 50%,rgba(37,99,235,.1) 0%,transparent 60%)}
+    .port-in{position:relative;z-index:1;max-width:1200px;margin:0 auto}
+    .port-hdr{text-align:center;margin-bottom:3rem}
+    .port-hdr .stitle{color:#fff}
+    .port-hdr .ssub{color:rgba(255,255,255,.5);margin:0 auto}
+    .drive-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem}
+    .drive-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer}
+    .drive-item:hover{border-color:rgba(16,185,129,.4);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+    .drive-item iframe{width:100%;height:210px;border:none;display:block;pointer-events:none}
+    .drive-lbl{padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between}
+    .drive-lbl span{font-size:.82rem;color:rgba(255,255,255,.55)}
+    .drive-lbl a{font-size:.75rem;color:var(--emerald);text-decoration:none}
+    .drive-lbl a:hover{text-decoration:underline}
+
+    /* PRICING */
+    .pricing{padding:100px 5%;background:var(--gray-100);text-align:center}
+    .price-hdr{margin-bottom:3rem}
+    .price-hdr .ssub{margin:0 auto}
+    .price-card{max-width:480px;margin:0 auto;background:#fff;border:1px solid var(--gray-200);border-radius:24px;padding:2.5rem;position:relative;overflow:hidden}
+    .price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--blue),var(--emerald))}
+    .pfrom{font-size:.85rem;color:var(--gray-600);margin-bottom:.3rem}
+    .pamount{font-family:var(--fd);font-size:3rem;font-weight:800;color:var(--text-dark);letter-spacing:-.04em}
+    .pamount span{font-size:1.2rem;font-weight:500;color:var(--gray-600)}
+    .pnote{font-size:.82rem;color:var(--emerald);margin-top:.3rem;margin-bottom:2rem}
+    .plist{list-style:none;text-align:left;margin-bottom:2rem;display:flex;flex-direction:column;gap:.7rem}
+    .plist li{display:flex;align-items:center;gap:.6rem;font-size:.9rem;color:var(--gray-600)}
+    .plist li::before{content:'✓';width:20px;height:20px;background:rgba(16,185,129,.1);color:var(--emerald);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+    .pmethods{display:flex;gap:.5rem;justify-content:center;margin-top:1.5rem}
+    .pbadge{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:8px;padding:.4rem .8rem;font-size:.78rem;font-weight:500;color:var(--gray-600)}
+
+    /* TESTIMONI */
+    .testi{padding:100px 5%;background:#fff}
+    .testi-hdr{text-align:center;margin-bottom:4rem}
+    .testi-hdr .ssub{margin:0 auto}
+    .testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;max-width:1200px;margin:0 auto}
+    .testi-item{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer}
+    .testi-item:hover{box-shadow:0 12px 40px rgba(0,0,0,.1);transform:translateY(-3px)}
+    .testi-item iframe{width:100%;height:230px;border:none;display:block;pointer-events:none}
+    .testi-foot{padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between}
+    .testi-foot span{font-size:.8rem;color:var(--gray-600)}
+    .tstars{color:#f59e0b;font-size:.78rem}
+
+    /* LIGHTBOX */
+    .lightbox{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);align-items:center;justify-content:center}
+    .lightbox.open{display:flex}
+    .lightbox iframe{width:90vw;max-width:920px;height:82vh;border:none;border-radius:12px}
+    .lb-close{position:absolute;top:1rem;right:1.5rem;color:#fff;font-size:2rem;cursor:pointer;background:none;border:none;line-height:1}
+
+    /* COMMENTS */
+    .comments{padding:80px 5%;background:var(--gray-100)}
+    .comm-in{max-width:800px;margin:0 auto}
+    .comm-hdr{text-align:center;margin-bottom:3rem}
+    .comm-hdr .ssub{margin:0 auto}
+    .comm-form{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:1.8rem;margin-bottom:2rem}
+    .comm-form h3{font-family:var(--fd);font-size:1rem;font-weight:600;margin-bottom:1rem}
+    .comm-fields{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem}
+    @media(max-width:520px){.comm-fields{grid-template-columns:1fr}}
+    .comm-form input,.comm-form textarea{width:100%;padding:.7rem 1rem;border:1px solid var(--gray-200);border-radius:10px;font-family:var(--fb);font-size:.9rem;outline:none;transition:border .2s}
+    .comm-form input:focus,.comm-form textarea:focus{border-color:var(--emerald);box-shadow:0 0 0 3px rgba(16,185,129,.1)}
+    .comm-form textarea{resize:vertical;min-height:90px;margin-bottom:.8rem;display:block}
+    .star-row{display:flex;gap:.3rem;margin-bottom:.8rem}
+    .star-row span{font-size:1.4rem;cursor:pointer;transition:transform .1s;user-select:none;opacity:.35}
+    .star-row span.on{opacity:1}
+    .star-row span:hover{transform:scale(1.2)}
+    .comm-btn{background:var(--emerald);color:var(--navy);font-family:var(--fd);font-weight:600;font-size:.9rem;padding:.7rem 1.8rem;border:none;border-radius:10px;cursor:pointer;transition:all .2s}
+    .comm-btn:hover{background:var(--emerald-glow);transform:translateY(-1px)}
+    .comm-list{display:flex;flex-direction:column;gap:1rem}
+    .comm-card{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:1.3rem;animation:fu .4s ease}
+    .comm-top{display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem}
+    .comm-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--emerald));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.8rem;font-weight:600;color:#fff;flex-shrink:0}
+    .comm-meta{flex:1}
+    .comm-name{font-family:var(--fd);font-size:.9rem;font-weight:600}
+    .comm-date{font-size:.74rem;color:var(--gray-400)}
+    .comm-stars{color:#f59e0b;font-size:.82rem}
+    .comm-txt{font-size:.9rem;color:var(--gray-600);line-height:1.6}
+    .no-comm{text-align:center;color:var(--gray-400);font-size:.9rem;padding:2rem}
+
+    /* CTA */
+    .cta-sec{background:linear-gradient(135deg,var(--navy) 0%,#0d1b3e 100%);padding:100px 5%;text-align:center;position:relative;overflow:hidden}
+    .cta-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(16,185,129,.15) 0%,transparent 65%)}
+    .cta-in{position:relative;z-index:1;max-width:680px;margin:0 auto}
+    .cta-in h2{font-family:var(--fd);font-size:clamp(2rem,5vw,3rem);font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:1rem}
+    .cta-in p{font-size:1.05rem;color:rgba(255,255,255,.55);margin-bottom:2.5rem;line-height:1.7}
+    .cta-acts{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+
+    /* FOOTER */
+    footer{background:#060b18;padding:60px 5% 40px;border-top:1px solid rgba(255,255,255,.06)}
+    .ft-in{max-width:1200px;margin:0 auto}
+    .ft-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+    .ft-brand p{font-size:.88rem;color:rgba(255,255,255,.4);line-height:1.7;margin-top:.8rem;max-width:280px}
+    .ft-col h4{font-family:var(--fd);font-size:.82rem;font-weight:600;color:rgba(255,255,255,.6);letter-spacing:.05em;text-transform:uppercase;margin-bottom:1rem}
+    .ft-col a{display:block;font-size:.88rem;color:rgba(255,255,255,.35);text-decoration:none;margin-bottom:.6rem;transition:color .2s}
+    .ft-col a:hover{color:rgba(255,255,255,.7)}
+    .ft-bot{padding-top:2rem;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .ft-copy{font-size:.82rem;color:rgba(255,255,255,.25)}
+    .ft-tag{font-size:.82rem;color:rgba(255,255,255,.2)}
+    .ft-tag span{color:var(--emerald)}
+
+    /* WA */
+    .wa-fix{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:.6rem}
+    .wa-lbl{background:#fff;color:var(--text-dark);font-size:.8rem;font-weight:500;padding:.4rem .9rem;border-radius:100px;box-shadow:0 4px 20px rgba(0,0,0,.15);white-space:nowrap}
+    .wa-btn{width:58px;height:58px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 6px 30px rgba(37,211,102,.45);transition:all .3s;position:relative}
+    .wa-btn:hover{transform:scale(1.1);box-shadow:0 10px 40px rgba(37,211,102,.6)}
+    .wa-btn svg{width:28px;height:28px;fill:#fff}
+    .wa-pulse{position:absolute;inset:0;border-radius:50%;background:#25d366;animation:wp 2.5s ease-out infinite;z-index:-1}
+    @keyframes wp{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){.how-in{grid-template-columns:1fr}.ft-top{grid-template-columns:1fr 1fr}}
+    @media(max-width:640px){.nav-links{display:none}.hamburger{display:flex}.hstats{gap:1.5rem}.ft-top{grid-template-columns:1fr}.ft-bot{flex-direction:column;text-align:center}.wa-fix{bottom:20px;right:20px}}
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="nav">
+  <a href="#" class="logo">Well<span>tion</span></a>
+  <ul class="nav-links">
+    <li><a href="#layanan">Layanan</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#testimoni">Testimoni</a></li>
+    <li><a href="#komentar">Komentar</a></li>
+    <li><a href="https://wa.me/6285167351196?text=Halo%20Welltion%2C%20saya%20ingin%20konsultasi" class="nav-cta">Konsultasi Gratis →</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="#layanan" onclick="toggleMenu()">Layanan</a>
+  <a href="#portfolio" onclick="toggleMenu()">Portfolio</a>
+  <a href="#testimoni" onclick="toggleMenu()">Testimoni</a>
+  <a href="#komentar" onclick="toggleMenu()">Komentar</a>
+  <a href="https://wa.me/6285167351196?text=Halo%20Welltion%2C%20saya%20ingin%20konsultasi" class="nav-cta" onclick="toggleMenu()">Konsultasi Gratis →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div class="hgrid"></div>
+  <div class="hcontent">
+    <div class="badge">Salam Senyum dari Welltion</div>
+    <h1>Dokumen Profesional,<br><span class="hl">Tanpa Ribet.</span></h1>
+    <p class="hsub">Dari CV hingga company profile — kami bantu susun dokumen kamu jadi lebih rapi, jelas, dan siap digunakan. Konsultasi dulu, bayar setelah puas.</p>
+    <div class="hact">
+      <a href="https://wa.me/6285167351196?text=Halo%20Welltion%2C%20saya%20ingin%20konsultasi" class="btn-p">💬 Chat di WhatsApp</a>
+      <a href="#layanan" class="btn-s">Lihat Layanan ↓</a>
+    </div>
+    <div class="hstats">
+      <div class="stat"><span class="snum">50<span>+</span></span><div class="slbl">Dokumen Selesai</div></div>
+      <div class="stat"><span class="snum">100<span>%</span></span><div class="slbl">Klien Puas</div></div>
+      <div class="stat"><span class="snum">Rp35<span>rb</span></span><div class="slbl">Mulai Dari</div></div>
+      <div class="stat"><span class="snum">1<span>–2</span></span><div class="slbl">Hari Selesai</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="layanan">
+  <div class="svc-hdr reveal">
+    <span class="slabel">Layanan Kami</span>
+    <h2 class="stitle">Semua yang Kamu Butuhkan,<br>Satu Tempat</h2>
+    <p class="ssub">Dari pelamar kerja hingga pemilik usaha — kami siap bantu susun dokumen yang rapi dan profesional.</p>
+  </div>
+  <div class="svc-grid">
+    <div class="svc-card reveal">
+      <div class="svc-icon">📄</div>
+      <h3>Pembuatan CV & Lamaran</h3>
+      <p>CV ATS-friendly yang menonjolkan pengalamanmu. Format bersih, isi kuat, siap dikirim ke HRD.</p>
+      <span class="svc-tag">Paling diminati</span><br>
+      <button class="cv-open-btn" onclick="openCV()">✨ Buat CV Sendiri — Gratis!</button>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-icon">📋</div>
+      <h3>Proposal Usaha & Proyek</h3>
+      <p>Proposal terstruktur dengan narasi meyakinkan. Cocok untuk pengajuan dana, kemitraan, atau tender.</p>
+      <span class="svc-tag">Untuk UMKM & bisnis</span>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-icon">✉️</div>
+      <h3>Surat Resmi & Permohonan</h3>
+      <p>Surat instansi, permohonan izin, surat kuasa, atau keperluan administratif lainnya dengan format baku.</p>
+      <span class="svc-tag">Formal & baku</span>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-icon">🎓</div>
+      <h3>Format Skripsi & Laporan</h3>
+      <p>Perapihan margin, daftar isi otomatis, heading, daftar pustaka, dan konsistensi format sesuai panduan.</p>
+      <span class="svc-tag">Untuk mahasiswa</span>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-icon">🏢</div>
+      <h3>Company Profile</h3>
+      <p>Profil perusahaan yang representatif — struktur, layanan, dan visual yang merepresentasikan identitas bisnismu.</p>
+      <span class="svc-tag">Untuk perusahaan</span>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-icon">📊</div>
+      <h3>Slide Presentasi</h3>
+      <p>Slide laporan kerja atau presentasi perusahaan dengan layout bersih dan mudah dipahami.</p>
+      <span class="svc-tag">PowerPoint & Canva</span>
+    </div>
+  </div>
+</section>
+
+<!-- CV MODAL -->
+<div class="modal-ov" id="cvModal">
+  <div class="modal-box">
+    <button class="modal-x" onclick="closeCV()">✕</button>
+    <div class="modal-title">✨ CV Builder Gratis</div>
+    <div class="modal-sub">Isi data kamu, pilih template, lalu download PDF atau PNG langsung!</div>
+    <div class="tpl-row">
+      <button class="tpl-btn active" onclick="setTpl('min',this)">⬜ Minimalist</button>
+      <button class="tpl-btn" onclick="setTpl('pro',this)">🔷 Professional</button>
+      <button class="tpl-btn" onclick="setTpl('cre',this)">🎨 Modern Creative</button>
+    </div>
+    <div class="cv-layout">
+      <div class="cv-form-col">
+        <div class="fsec">Data Pribadi</div>
+        <div class="fg"><label>Nama Lengkap *</label><input id="cn" placeholder="Budi Santoso" oninput="renderCV()"></div>
+        <div class="fg"><label>Jabatan / Profesi</label><input id="ct" placeholder="Fresh Graduate | Marketing" oninput="renderCV()"></div>
+        <div class="fg"><label>Email</label><input id="ce" placeholder="email@gmail.com" oninput="renderCV()"></div>
+        <div class="fg"><label>No. HP / WhatsApp</label><input id="cp" placeholder="08xx-xxxx-xxxx" oninput="renderCV()"></div>
+        <div class="fg"><label>Kota</label><input id="cl" placeholder="Jakarta Selatan" oninput="renderCV()"></div>
+        <div class="fg"><label>LinkedIn (opsional)</label><input id="cli" placeholder="linkedin.com/in/namamu" oninput="renderCV()"></div>
+        <div class="fsec">Ringkasan Profil</div>
+        <div class="fg"><textarea id="csum" rows="3" placeholder="Ringkasan singkat tentang dirimu..." oninput="renderCV()"></textarea></div>
+        <div class="fsec">Pengalaman Kerja</div>
+        <div class="fg"><textarea id="cexp" rows="4" placeholder="PT. ABC (2022–2024) – Marketing Staff&#10;• Mengelola media sosial perusahaan&#10;• Meningkatkan engagement 40%" oninput="renderCV()"></textarea></div>
+        <div class="fsec">Pendidikan</div>
+        <div class="fg"><textarea id="cedu" rows="3" placeholder="S1 Manajemen – Universitas Indonesia (2018–2022)&#10;IPK: 3.75" oninput="renderCV()"></textarea></div>
+        <div class="fsec">Keahlian</div>
+        <div class="fg"><input id="csk" placeholder="Microsoft Office, Canva, Copywriting" oninput="renderCV()"></div>
+        <div class="fsec">Sertifikasi / Organisasi (opsional)</div>
+        <div class="fg"><textarea id="cex" rows="2" placeholder="Google Analytics Certified | Ketua BEM 2021" oninput="renderCV()"></textarea></div>
+        <div class="cv-dl-row">
+          <button class="btn-p" onclick="dlCV('pdf')" style="font-size:.85rem;padding:.65rem 1.2rem">⬇ Download PDF</button>
+          <button class="btn-s" onclick="dlCV('png')" style="font-size:.85rem;padding:.65rem 1.2rem;color:var(--text-dark);border-color:var(--gray-200)">🖼 Download PNG</button>
+        </div>
+        <p style="font-size:.75rem;color:var(--gray-400);margin-top:.4rem">Butuh desain lebih custom? <a href="https://wa.me/6285167351196?text=Saya%20butuh%20CV%20custom%20dari%20Welltion" style="color:var(--emerald)">Chat Welltion →</a></p>
+      </div>
+      <div class="cv-preview-col">
+        <div class="cv-prev-lbl">Preview Langsung</div>
+        <div id="cvPrev"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="cara-kerja">
+  <div class="how-in">
+    <div>
+      <span class="slabel reveal">Cara Kerja</span>
+      <h2 class="stitle reveal">Simpel. Cepat.<br>Langsung Jadi.</h2>
+      <p class="ssub reveal">Tidak perlu ribet. Cukup ceritakan kebutuhanmu dan kami yang kerjakan.</p>
+      <div class="steps">
+        <div class="step reveal"><div class="sn">1</div><div class="sb"><h4>Hubungi & Konsultasi</h4><p>Chat via WhatsApp, ceritakan kebutuhan dokumen kamu. Konsultasi awal gratis.</p></div></div>
+        <div class="step reveal"><div class="sn">2</div><div class="sb"><h4>Pengerjaan Dokumen</h4><p>Kami susun dokumenmu sesuai kebutuhan. Biasanya selesai dalam 1–2 hari kerja.</p></div></div>
+        <div class="step reveal"><div class="sn">3</div><div class="sb"><h4>Revisi Jika Diperlukan</h4><p>Belum sesuai? Sampaikan feedback dan kami revisi hingga kamu puas.</p></div></div>
+        <div class="step reveal"><div class="sn">4</div><div class="sb"><h4>Dokumen Siap Digunakan</h4><p>File dikirim dalam format yang kamu inginkan. Siap kirim, cetak, atau presentasi!</p></div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="dash-card">
+        <div class="dh"><div class="dd r"></div><div class="dd y"></div><div class="dd g"></div><span class="dt">welltion.dashboard</span></div>
+        <div class="kg">
+          <div class="kc"><div class="kl">Dokumen Selesai</div><div class="kv g">52</div><div class="kch">↑ bulan ini</div></div>
+          <div class="kc"><div class="kl">Tingkat Kepuasan</div><div class="kv">100<span style="font-size:1rem;color:rgba(255,255,255,.4)">%</span></div><div class="kch">⭐ dari klien</div></div>
+          <div class="kc"><div class="kl">Rata-rata Waktu</div><div class="kv" style="font-size:1.1rem">1–2 Hari</div><div class="kch">↓ cepat</div></div>
+          <div class="kc"><div class="kl">Harga Mulai</div><div class="kv" style="font-size:1.1rem">Rp35rb</div><div class="kch">✓ fleksibel</div></div>
+        </div>
+        <div class="al">
+          <div class="ai"><div class="ad b"></div><span class="at">CV Fresh Graduate — selesai dikerjakan</span><span class="atm">1j lalu</span></div>
+          <div class="ai"><div class="ad g"></div><span class="at">Proposal UMKM — revisi diterima klien</span><span class="atm">3j lalu</span></div>
+          <div class="ai"><div class="ad p"></div><span class="at">Company Profile — dikirim ke klien</span><span class="atm">1h lalu</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio" id="portfolio">
+  <div class="port-in">
+    <div class="port-hdr reveal">
+      <span class="slabel">Portfolio</span>
+      <h2 class="stitle">Hasil Kerja yang<br>Berbicara Sendiri</h2>
+      <p class="ssub">Dokumen nyata yang telah kami kerjakan. Klik untuk preview lebih besar.</p>
+    </div>
+    <div class="drive-grid">
+      <div class="drive-item reveal" onclick="openLB('1OeFGkg7Lfi_XhFWLywmUPUrxmhXD-M-O')">
+        <iframe src="https://drive.google.com/file/d/1OeFGkg7Lfi_XhFWLywmUPUrxmhXD-M-O/preview" loading="lazy"></iframe>
+        <div class="drive-lbl"><span>Portfolio 1</span><a href="https://drive.google.com/file/d/1OeFGkg7Lfi_XhFWLywmUPUrxmhXD-M-O/view" target="_blank" onclick="event.stopPropagation()">Buka ↗</a></div>
+      </div>
+      <div class="drive-item reveal" onclick="openLB('1jH6wkO7DhRaLOCybtQxnTyDcLzK-NrZp')">
+        <iframe src="https://drive.google.com/file/d/1jH6wkO7DhRaLOCybtQxnTyDcLzK-NrZp/preview" loading="lazy"></iframe>
+        <div class="drive-lbl"><span>Portfolio 2</span><a href="https://drive.google.com/file/d/1jH6wkO7DhRaLOCybtQxnTyDcLzK-NrZp/view" target="_blank" onclick="event.stopPropagation()">Buka ↗</a></div>
+      </div>
+      <div class="drive-item reveal" onclick="openLB('11yNJSw47zW1qmomg6HXauh7Kr3h0z_L0')">
+        <iframe src="https://drive.google.com/file/d/11yNJSw47zW1qmomg6HXauh7Kr3h0z_L0/preview" loading="lazy"></iframe>
+        <div class="drive-lbl"><span>Portfolio 3</span><a href="https://drive.google.com/file/d/11yNJSw47zW1qmomg6HXauh7Kr3h0z_L0/view" target="_blank" onclick="event.stopPropagation()">Buka ↗</a></div>
+      </div>
+      <div class="drive-item reveal" onclick="openLB('16hTbrRqFR2mx5YmmoAeOiTbN36vGhPSz')">
+        <iframe src="https://drive.google.com/file/d/16hTbrRqFR2mx5YmmoAeOiTbN36vGhPSz/preview" loading="lazy"></iframe>
+        <div class="drive-lbl"><span>Portfolio 4</span><a href="https://drive.google.com/file/d/16hTbrRqFR2mx5YmmoAeOiTbN36vGhPSz/view" target="_blank" onclick="event.stopPropagation()">Buka ↗</a></div>
+      </div>
+      <div class="drive-item reveal" onclick="openLB('1qwkGMsAVbcVJirpwcfq3pOG0NiT8daYq')">
+        <iframe src="https://drive.google.com/file/d/1qwkGMsAVbcVJirpwcfq3pOG0NiT8daYq/preview" loading="lazy"></iframe>
+        <div class="drive-lbl"><span>Portfolio 5</span><a href="https://drive.google.com/file/d/1qwkGMsAVbcVJirpwcfq3pOG0NiT8daYq/view" target="_blank" onclick="event.stopPropagation()">Buka ↗</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="harga">
+  <div class="price-hdr reveal">
+    <span class="slabel">Harga</span>
+    <h2 class="stitle">Harga Ramah,<br>Kualitas Tidak Murahan</h2>
+    <p class="ssub">Transparan dan fleksibel. Semakin mudah pekerjaan, semakin ringan biayanya.</p>
+  </div>
+  <div class="price-card reveal">
+    <div class="pfrom">Mulai dari</div>
+    <div class="pamount">Rp35.000 <span>/ dokumen</span></div>
+    <div class="pnote">↓ bisa lebih murah tergantung tingkat kemudahan</div>
+    <ul class="plist">
+      <li>Konsultasi kebutuhan gratis</li>
+      <li>Pengerjaan 1–2 hari kerja</li>
+      <li>Revisi setelah pengerjaan</li>
+      <li>Format sesuai kebutuhan (Word, PDF, PPT)</li>
+      <li>Didukung jaringan profesional luas</li>
+      <li>Bisa tatap muka (Jabodetabek)</li>
+    </ul>
+    <a href="https://wa.me/6285167351196?text=Halo%20Welltion%2C%20saya%20mau%20tanya%20harga" class="btn-p" style="width:100%;justify-content:center;display:flex">💬 Tanya Harga via WhatsApp</a>
+    <div class="pmethods"><span class="pbadge">💳 Transfer BCA</span><span class="pbadge">📱 GoPay</span></div>
+  </div>
+</section>
+
+<!-- TESTIMONI -->
+<section class="testi" id="testimoni">
+  <div class="testi-hdr reveal">
+    <span class="slabel">Testimoni</span>
+    <h2 class="stitle">Bukti Nyata dari<br>Klien Kami</h2>
+    <p class="ssub">Screenshot asli dari klien yang telah menggunakan layanan Welltion. Klik untuk perbesar.</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-item reveal" onclick="openLB('1_xL2ZHMvKkNP8t_VVcVmU0QRaazrPPU2')">
+      <iframe src="https://drive.google.com/file/d/1_xL2ZHMvKkNP8t_VVcVmU0QRaazrPPU2/preview" loading="lazy"></iframe>
+      <div class="testi-foot"><span>Testimoni 1</span><span class="tstars">★★★★★</span></div>
+    </div>
+    <div class="testi-item reveal" onclick="openLB('1D3hUtL3Pt_5N715jw9wNZnjjtvZQHvz3')">
+      <iframe src="https://drive.google.com/file/d/1D3hUtL3Pt_5N715jw9wNZnjjtvZQHvz3/preview" loading="lazy"></iframe>
+      <div class="testi-foot"><span>Testimoni 2</span><span class="tstars">★★★★★</span></div>
+    </div>
+    <div class="testi-item reveal" onclick="openLB('1SDsc6k4qHcMSWeOm1BO9oBIjnZb5ukaC')">
+      <iframe src="https://drive.google.com/file/d/1SDsc6k4qHcMSWeOm1BO9oBIjnZb5ukaC/preview" loading="lazy"></iframe>
+      <div class="testi-foot"><span>Testimoni 3</span><span class="tstars">★★★★★</span></div>
+    </div>
+    <div class="testi-item reveal" onclick="openLB('1mEvHfhMh8D2zM_l_KfTDLcvqDlEC2fw1')">
+      <iframe src="https://drive.google.com/file/d/1mEvHfhMh8D2zM_l_KfTDLcvqDlEC2fw1/preview" loading="lazy"></iframe>
+      <div class="testi-foot"><span>Testimoni 4</span><span class="tstars">★★★★★</span></div>
+    </div>
+    <div class="testi-item reveal" onclick="openLB('1Qes-na9oFEQHT8WF2o5UL_gc5f5oX40k')">
+      <iframe src="https://drive.google.com/file/d/1Qes-na9oFEQHT8WF2o5UL_gc5f5oX40k/preview" loading="lazy"></iframe>
+      <div class="testi-foot"><span>Testimoni 5</span><span class="tstars">★★★★★</span></div>
+    </div>
+    <div class="testi-item reveal" onclick="openLB('1CNoldg1LLHwYo6apemGUwE5j888hcpWc')">
+      <iframe src="https://drive.google.com/file/d/1CNoldg1LLHwYo6apemGUwE5j888hcpWc/preview" loading="lazy"></iframe>
+      <div class="testi-foot"><span>Testimoni 6</span><span class="tstars">★★★★★</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLB()">
+  <button class="lb-close">✕</button>
+  <iframe id="lbFrame" src="" onclick="event.stopPropagation()"></iframe>
+</div>
+
+<!-- COMMENTS -->
+<section class="comments" id="komentar">
+  <div class="comm-in">
+    <div class="comm-hdr reveal">
+      <span class="slabel">Komentar</span>
+      <h2 class="stitle">Apa Pendapatmu?</h2>
+      <p class="ssub">Tinggalkan komentar, pertanyaan, atau kesan tentang Welltion. Kami baca setiap pesan!</p>
+    </div>
+    <div class="comm-form reveal">
+      <h3>💬 Tulis Komentar</h3>
+      <div class="comm-fields">
+        <input id="cname" placeholder="Nama kamu (opsional — boleh anonim)">
+        <input id="crole" placeholder="Profesi / Asal (opsional)">
+      </div>
+      <div class="star-row" id="starRow">
+        <span onclick="setRating(1)" data-s="1">★</span>
+        <span onclick="setRating(2)" data-s="2">★</span>
+        <span onclick="setRating(3)" data-s="3">★</span>
+        <span onclick="setRating(4)" data-s="4">★</span>
+        <span onclick="setRating(5)" data-s="5">★</span>
+      </div>
+      <textarea id="ctxt" placeholder="Tulis komentar, kesan, atau pertanyaanmu di sini..."></textarea>
+      <button class="comm-btn" onclick="submitComment()">Kirim Komentar →</button>
+    </div>
+    <div class="comm-list" id="commList"></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-in">
+    <span class="slabel reveal">Mulai Sekarang</span>
+    <h2 class="reveal">Dokumenmu Menunggu<br>untuk Diperbaiki</h2>
+    <p class="reveal">Jangan biarkan dokumen yang kurang rapi menghambat langkahmu. Konsultasi gratis, tanpa komitmen.</p>
+    <div class="cta-acts reveal">
+      <a href="https://wa.me/6285167351196?text=Halo%20Welltion%2C%20saya%20ingin%20konsultasi%20dokumen" class="btn-p">💬 Chat WhatsApp Sekarang</a>
+      <a href="https://www.instagram.com/welltion.ketik" target="_blank" class="btn-s">📸 Lihat Instagram</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-in">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <a href="#" class="logo">Well<span>tion</span></a>
+        <p>Layanan dokumen dan administrasi profesional. Membantu individu, mahasiswa, dan bisnis tampil lebih rapi dan siap pakai.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Layanan</h4>
+        <a href="#layanan">CV & Lamaran</a>
+        <a href="#layanan">Proposal</a>
+        <a href="#layanan">Surat Resmi</a>
+        <a href="#layanan">Skripsi & Laporan</a>
+        <a href="#layanan">Company Profile</a>
+        <a href="#layanan">Presentasi</a>
+      </div>
+      <div class="ft-col">
+        <h4>Kontak</h4>
+        <a href="https://wa.me/6285167351196" target="_blank">WhatsApp</a>
+        <a href="https://www.instagram.com/welltion.ketik" target="_blank">Instagram</a>
+        <a href="#komentar">Komentar</a>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <span class="ft-copy">© 2025 Welltion. All rights reserved.</span>
+      <span class="ft-tag"><span>Salam Senyum</span> — Ghifari, Founder Welltion</span>
+    </div>
+  </div>
+</footer>
+
+<!-- WA STICKY -->
+<div class="wa-fix">
+  <div class="wa-lbl">Chat langsung yuk! 😊</div>
+  <a href="https://wa.me/6285167351196?text=Halo%20Welltion%2C%20saya%20ingin%20konsultasi%20dokumen" class="wa-btn" target="_blank" rel="noopener">
+    <div class="wa-pulse"></div>
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+</div>
+
+<script>
+/* NAV */
+function toggleMenu(){document.getElementById('mobMenu').classList.toggle('open')}
+window.addEventListener('scroll',()=>{document.getElementById('nav').style.height=scrollY>60?'58px':'68px'})
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',function(e){const t=document.querySelector(this.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}}))
+
+/* REVEAL */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}}),{threshold:.1})
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el))
+
+/* LIGHTBOX */
+function openLB(id){document.getElementById('lbFrame').src='https://drive.google.com/file/d/'+id+'/preview';document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden'}
+function closeLB(){document.getElementById('lightbox').classList.remove('open');document.getElementById('lbFrame').src='';document.body.style.overflow=''}
+
+/* CV BUILDER */
+let tpl='min'
+function openCV(){document.getElementById('cvModal').classList.add('open');document.body.style.overflow='hidden';renderCV()}
+function closeCV(){document.getElementById('cvModal').classList.remove('open');document.body.style.overflow=''}
+function setTpl(t,btn){tpl=t;document.querySelectorAll('.tpl-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCV()}
+function gv(id){return(document.getElementById(id)||{}).value||''}
+function n2b(s){return s.replace(/\n/g,'<br>')}
+
+function renderCV(){
+  const name=gv('cn')||'Nama Lengkap',title=gv('ct'),email=gv('ce'),phone=gv('cp'),loc=gv('cl'),li=gv('cli')
+  const sum=gv('csum'),exp=gv('cexp'),edu=gv('cedu'),sk=gv('csk'),ex=gv('cex')
+  const contact=[email,phone,loc,li].filter(Boolean).join(' · ')
+  let h=''
+  if(tpl==='min'){
+    h=`<div class="tpl-min">
+      <div class="cn">${name}</div>${title?`<div style="font-size:11px;color:#666;margin-bottom:5px">${title}</div>`:''}
+      <div class="ct">${contact}</div>
+      ${sum?`<div class="cs"><div class="cst">Profil</div>${n2b(sum)}</div>`:''}
+      ${exp?`<div class="cs"><div class="cst">Pengalaman</div>${n2b(exp)}</div>`:''}
+      ${edu?`<div class="cs"><div class="cst">Pendidikan</div>${n2b(edu)}</div>`:''}
+      ${sk?`<div class="cs"><div class="cst">Keahlian</div>${sk}</div>`:''}
+      ${ex?`<div class="cs"><div class="cst">Lainnya</div>${n2b(ex)}</div>`:''}
+    </div>`
+  } else if(tpl==='pro'){
+    h=`<div class="tpl-pro">
+      <div class="ch"><div class="cn">${name}</div>${title?`<div class="ct">${title}</div>`:''}
+      <div class="ct" style="margin-top:4px">${contact}</div></div>
+      <div class="cb">
+        ${sum?`<div class="cs"><div class="cst">Profil</div>${n2b(sum)}</div>`:''}
+        ${exp?`<div class="cs"><div class="cst">Pengalaman</div>${n2b(exp)}</div>`:''}
+        ${edu?`<div class="cs"><div class="cst">Pendidikan</div>${n2b(edu)}</div>`:''}
+        ${sk?`<div class="cs"><div class="cst">Keahlian</div>${sk}</div>`:''}
+        ${ex?`<div class="cs"><div class="cst">Lainnya</div>${n2b(ex)}</div>`:''}
+      </div></div>`
+  } else {
+    h=`<div class="tpl-cre">
+      <div class="csb">
+        <div class="cn">${name}</div>${title?`<div class="ct">${title}</div>`:''}
+        <div style="font-size:10px;color:rgba(255,255,255,.55);line-height:1.8">${[email,phone,loc,li].filter(Boolean).join('<br>')}</div>
+        ${sk?`<div class="csts">Keahlian</div><div style="font-size:11px;color:rgba(255,255,255,.7);line-height:1.7">${sk.split(',').map(s=>'• '+s.trim()).join('<br>')}</div>`:''}
+        ${ex?`<div class="csts">Lainnya</div><div style="font-size:11px;color:rgba(255,255,255,.7)">${n2b(ex)}</div>`:''}
+      </div>
+      <div class="cm">
+        ${sum?`<div class="cst">Profil</div><div style="font-size:11px;margin-bottom:8px">${n2b(sum)}</div>`:''}
+        ${exp?`<div class="cst">Pengalaman</div><div style="font-size:11px;margin-bottom:8px">${n2b(exp)}</div>`:''}
+        ${edu?`<div class="cst">Pendidikan</div><div style="font-size:11px">${n2b(edu)}</div>`:''}
+      </div></div>`
+  }
+  document.getElementById('cvPrev').innerHTML=h
+}
+
+async function dlCV(fmt){
+  const el=document.getElementById('cvPrev')
+  if(!el.innerText.trim()){alert('Isi data CV kamu dulu ya!');return}
+  try{
+    const canvas=await html2canvas(el,{scale:2,backgroundColor:'#ffffff'})
+    if(fmt==='png'){
+      const a=document.createElement('a');a.download='CV-Welltion.png';a.href=canvas.toDataURL();a.click()
+    } else {
+      const {jsPDF}=window.jspdf
+      const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'})
+      const w=pdf.internal.pageSize.getWidth()
+      const h=canvas.height*w/canvas.width
+      pdf.addImage(canvas.toDataURL(),'PNG',0,0,w,h)
+      pdf.save('CV-Welltion.pdf')
+    }
+  }catch(e){alert('Gagal download, coba lagi ya!')}
+}
+
+/* COMMENTS */
+let rating=5
+function setRating(r){rating=r;document.querySelectorAll('#starRow span').forEach((s,i)=>s.classList.toggle('on',i<r))}
+setRating(5)
+
+let comments=[]
+try{comments=JSON.parse(localStorage.getItem('wt_comm')||'[]')}catch(e){}
+renderComments()
+
+function submitComment(){
+  const txt=document.getElementById('ctxt').value.trim()
+  if(!txt){alert('Tulis komentar dulu ya! 😊');return}
+  const name=document.getElementById('cname').value.trim()||'Anonim'
+  const role=document.getElementById('crole').value.trim()
+  comments.unshift({name,role,txt,rating,date:new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})})
+  try{localStorage.setItem('wt_comm',JSON.stringify(comments))}catch(e){}
+  document.getElementById('ctxt').value=''
+  document.getElementById('cname').value=''
+  document.getElementById('crole').value=''
+  setRating(5)
+  renderComments()
+}
+
+function renderComments(){
+  const list=document.getElementById('commList')
+  if(!comments.length){list.innerHTML='<div class="no-comm">Belum ada komentar. Jadilah yang pertama! 🌟</div>';return}
+  list.innerHTML=comments.map(c=>{
+    const ini=c.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)
+    const stars='★'.repeat(c.rating)+'☆'.repeat(5-c.rating)
+    return`<div class="comm-card">
+      <div class="comm-top">
+        <div class="comm-av">${ini}</div>
+        <div class="comm-meta">
+          <div class="comm-name">${c.name}${c.role?` <span style="font-weight:400;color:var(--gray-400);font-size:.8rem">· ${c.role}</span>`:''}</div>
+          <div class="comm-date">${c.date}</div>
+        </div>
+        <div class="comm-stars">${stars}</div>
+      </div>
+      <div class="comm-txt">${c.txt}</div>
+    </div>`
+  }).join('')
+}
+
+renderCV()
+</script>
+</body>
+</html>
