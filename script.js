@@ -196,8 +196,8 @@ if (imgInput) {
   imgInput.addEventListener('change', function () {
     const file = this.files[0]
     if (!file) return
-    if (file.size > 3 * 1024 * 1024) {
-      alert('Ukuran foto maksimal 3MB ya!')
+    if (file.size > 4 * 1024 * 1024) {
+      alert('Ukuran foto maksimal 4 MB ya!')
       this.value = ''
       return
     }
