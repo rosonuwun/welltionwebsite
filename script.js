@@ -72,15 +72,71 @@ const obs = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: 0.1 })
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el))
 
-// ── LIGHTBOX ─────────────────────────────────────────────────
-function openLB(id) {
-  document.getElementById('lbFrame').src = 'https://drive.google.com/file/d/' + id + '/preview'
-  document.getElementById('lightbox').classList.add('open')
+/* ============================================================
+   GANTI fungsi openLB & closeLB di script.js kamu
+   dengan fungsi openDrive & closeLB di bawah ini
+   ============================================================ */
+
+// Lightbox dengan fallback ke Google Drive
+function openDrive(fileId, driveUrl) {
+  const frame = document.getElementById('lbFrame')
+  const fallback = document.getElementById('lbFallback')
+  const fallbackLink = document.getElementById('lbFallbackLink')
+  const lb = document.getElementById('lightbox')
+
+  // Reset state
+  frame.style.display = 'block'
+  fallback.style.display = 'none'
+  fallbackLink.href = driveUrl
+
+  // Coba load iframe preview
+  frame.src = 'https://drive.google.com/file/d/' + fileId + '/preview'
+
+  // Kalau iframe gagal load dalam 5 detik → tampilkan fallback
+  const timeout = setTimeout(() => {
+    showFallback(driveUrl)
+  }, 5000)
+
+  frame.onload = () => {
+    clearTimeout(timeout)
+    // Cek apakah konten berhasil (iframe bisa load tapi isinya error page)
+    try {
+      // Kalau tidak error, biarkan tampil
+      clearTimeout(timeout)
+    } catch (e) {
+      showFallback(driveUrl)
+    }
+  }
+
+  frame.onerror = () => {
+    clearTimeout(timeout)
+    showFallback(driveUrl)
+  }
+
+  lb.classList.add('open')
   document.body.style.overflow = 'hidden'
 }
+
+function showFallback(driveUrl) {
+  const frame = document.getElementById('lbFrame')
+  const fallback = document.getElementById('lbFallback')
+  const fallbackLink = document.getElementById('lbFallbackLink')
+
+  frame.style.display = 'none'
+  fallback.style.display = 'flex'
+  fallbackLink.href = driveUrl
+
+  // Auto-buka Drive di tab baru setelah 1 detik
+  setTimeout(() => {
+    window.open(driveUrl, '_blank')
+  }, 800)
+}
+
 function closeLB() {
-  document.getElementById('lightbox').classList.remove('open')
-  document.getElementById('lbFrame').src = ''
+  const lb = document.getElementById('lightbox')
+  const frame = document.getElementById('lbFrame')
+  lb.classList.remove('open')
+  frame.src = ''
   document.body.style.overflow = ''
 }
 
@@ -197,7 +253,7 @@ if (imgInput) {
     const file = this.files[0]
     if (!file) return
     if (file.size > 4 * 1024 * 1024) {
-      alert('Ukuran foto maksimal 4 MB ya!')
+      alert('Ukuran foto maksimal 4MB ya!')
       this.value = ''
       return
     }
