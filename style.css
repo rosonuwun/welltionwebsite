@@ -553,3 +553,49 @@ nav {
   }
 
 }
+
+/* MOBILE NAVBAR FIX */
+@media (max-width: 768px) {
+
+  .nav-links {
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .nav-links a {
+    font-size: 0.78rem;
+  }
+
+  .nav-cta {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  nav {
+    padding: 0 3%;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+
+  .nav-links {
+    gap: 0.45rem;
+  }
+
+  .nav-links a {
+    font-size: 0.72rem;
+  }
+
+  .nav-cta {
+    font-size: 0.68rem;
+    padding: 0.4rem 0.65rem;
+  }
+
+}
