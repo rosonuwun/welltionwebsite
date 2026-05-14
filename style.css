@@ -503,3 +503,53 @@ nav {
     font-size: 1.6rem;
   }
 }
+
+/* MOBILE BUTTON FIX */
+@media (max-width: 480px) {
+
+  .comm-btn,
+  .btn-p,
+  .btn-s,
+  .nav-cta {
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+    white-space: normal;
+  }
+
+}
+/* MOBILE DASHBOARD FIX */
+@media (max-width: 768px) {
+
+  .how-in {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .dash-card {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .kg {
+    grid-template-columns: 1fr;
+  }
+
+  .kv {
+    font-size: 1.1rem;
+  }
+
+  .ai {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .at {
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+}
