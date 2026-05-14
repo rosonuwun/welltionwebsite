@@ -443,95 +443,63 @@
 }
 
 /* ── MOBILE OVERFLOW FIX ── */
-
-html,
-body {
-  width: 100%;
+html, body {
   max-width: 100%;
   overflow-x: hidden;
 }
 
-/* Prevent random overflow */
-* {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* Image & iframe responsive */
-img,
-iframe {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Main sections */
-.hero,
-.hgrid,
-nav {
+.hero {
   overflow: hidden;
   width: 100%;
 }
 
-/* Background orbs */
 .orb {
   max-width: 100vw;
-  pointer-events: none;
 }
 
-/* HERO BUTTONS */
-.hact {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
+.hgrid {
+  max-width: 100vw;
+  overflow: hidden;
 }
 
-/* HERO STATS */
+nav {
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+/* Fix hero stats kepotong */
 .hstats {
   gap: 1.2rem;
   padding: 2rem 1rem 0;
 }
 
-/* BUTTON STYLE */
-.btn-p,
-.btn-s {
+/* Fix button hero kepotong */
+.hact {
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.btn-p, .btn-s {
+  width: 100%;
+  max-width: 320px;
   justify-content: center;
 }
 
-/* ── MOBILE RESPONSIVE ── */
+/* Fix navbar kepotong */
 @media (max-width: 480px) {
-
-  /* Navbar */
   nav {
     padding: 0 4%;
   }
-
   .logo {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
-
-  /* Hero buttons */
-  .hact {
-    flex-direction: column;
-    align-items: center;
-    padding: 0 1rem;
-  }
-
-  .btn-p,
-  .btn-s {
-    width: 100%;
-    max-width: 320px;
-  }
-
-  /* Hero stats */
   .hstats {
-    display: grid;
     grid-template-columns: 1fr 1fr;
+    display: grid;
     gap: 1rem;
   }
-
   .snum {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
-
 }
