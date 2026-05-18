@@ -599,3 +599,347 @@ nav {
   }
 
 }
+
+/* ============================================================
+   TAMBAHKAN ke style.css — Upgrade: Logo, Kartu Nama,
+   Support Button, CV Photo Crop
+   ============================================================ */
+
+/* ── 1. NAVBAR LOGO IMAGE ── */
+.nav-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1); /* putih di dark navbar */
+  transition: opacity .2s;
+}
+.logo:hover .nav-logo-img { opacity: .85; }
+
+/* Di section terang (kalau perlu versi gelap) */
+.logo-dark .nav-logo-img { filter: none; }
+
+
+/* ── 2. KARTU NAMA SECTION ── */
+.kartu-nama-section {
+  padding: 100px 5%;
+  background: var(--gray-100);
+  overflow: hidden;
+}
+.kartu-nama-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.kartu-nama-text .ssub { margin-bottom: 2rem; }
+.kartu-nama-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.kartu-nama-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: visible;
+}
+.kartu-nama-img {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.15),
+    0 4px 20px rgba(0,0,0,.08);
+  display: block;
+  transition: transform .3s ease;
+}
+.kartu-nama-card:hover .kartu-nama-img {
+  transform: translateY(-6px);
+}
+.kartu-nama-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(ellipse at center, rgba(16,185,129,.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+@media (max-width: 768px) {
+  .kartu-nama-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .kartu-nama-text { text-align: center; }
+  .kartu-nama-actions { justify-content: center; }
+}
+
+
+/* ── 3. FLOATING SUPPORT BUTTON ── */
+.support-fab {
+  position: fixed;
+  bottom: 100px; /* di atas WA button */
+  right: 28px;
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .2rem;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  border-radius: 50px;
+  padding: .6rem .9rem;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(245,158,11,.4);
+  transition: all .3s ease;
+  animation: fadeUp .5s ease 1.2s both;
+}
+.support-fab:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 32px rgba(245,158,11,.55);
+}
+.support-fab-icon { font-size: 1.2rem; line-height: 1; }
+.support-fab-label {
+  font-family: var(--fd);
+  font-size: .65rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: .03em;
+}
+
+/* Support Overlay */
+.support-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.support-overlay.open { display: flex; }
+
+.support-modal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  animation: fadeUp .3s ease;
+  text-align: center;
+}
+.support-modal-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  background: var(--gray-100);
+  border: none; width: 32px; height: 32px;
+  border-radius: 50%; font-size: 1rem;
+  cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+}
+.support-modal-close:hover { background: var(--gray-200); }
+
+.support-modal-header { margin-bottom: 1.5rem; }
+.support-heart { font-size: 2.5rem; margin-bottom: .8rem; }
+.support-modal-header h3 {
+  font-family: var(--fd);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+  color: var(--text-dark);
+}
+.support-modal-header p {
+  font-size: .88rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+.support-amounts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .7rem;
+  margin-bottom: 1.2rem;
+}
+.support-amount-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .2rem;
+  padding: .8rem .4rem;
+  border: 2px solid var(--gray-200);
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: all .2s;
+}
+.support-amount-btn:hover,
+.support-amount-btn.active {
+  border-color: #f59e0b;
+  background: rgba(245,158,11,.06);
+}
+.support-emoji { font-size: 1.3rem; }
+.support-label {
+  font-family: var(--fd);
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.support-desc { font-size: .68rem; color: var(--gray-400); }
+
+.support-pay-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  width: 100%;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: #fff;
+  font-family: var(--fd);
+  font-weight: 600;
+  font-size: .95rem;
+  padding: .85rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all .25s;
+  margin-bottom: .8rem;
+}
+.support-pay-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245,158,11,.4);
+}
+.support-note {
+  font-size: .75rem;
+  color: var(--gray-400);
+}
+
+
+/* ── 4. CV PHOTO UPLOAD & CROP ── */
+.cv-photo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .8rem;
+  background: var(--gray-100);
+  border-radius: 12px;
+  margin-bottom: .5rem;
+}
+.cv-photo-preview {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(37,99,235,.1), rgba(16,185,129,.1));
+  border: 2px dashed var(--gray-200);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color .2s;
+}
+.cv-photo-preview img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.cv-photo-preview.has-photo { border-color: var(--emerald); border-style: solid; }
+
+.cv-photo-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: var(--blue);
+  color: #fff;
+  font-size: .8rem;
+  font-weight: 600;
+  padding: .5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.cv-photo-upload-btn:hover { background: var(--blue-light); }
+
+/* Crop Overlay */
+.crop-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0,0,0,.85);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.crop-overlay.open { display: flex; }
+
+.crop-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+.crop-title {
+  font-family: var(--fd);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.crop-canvas-wrap {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--gray-100);
+  cursor: move;
+  touch-action: none;
+}
+#cropCanvas {
+  position: absolute;
+  top: 0; left: 0;
+}
+.crop-circle-mask {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  box-shadow: 0 0 0 140px rgba(0,0,0,.55);
+  border-radius: 50%;
+  width: 220px; height: 220px;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+.crop-controls {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-bottom: 1rem;
+  padding: 0 .5rem;
+}
+.crop-controls input[type=range] {
+  flex: 1;
+  accent-color: var(--emerald);
+}
+.crop-actions {
+  display: flex;
+  gap: .7rem;
+  justify-content: center;
+}
+
+/* CV preview photo styles */
+.cv-photo-circle {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 2px solid rgba(0,0,0,.1);
+}
+
+@media (max-width: 640px) {
+  .support-fab { bottom: 96px; right: 20px; }
+  .support-amounts { grid-template-columns: repeat(3,1fr); }
+}

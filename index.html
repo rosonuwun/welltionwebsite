@@ -29,7 +29,9 @@ html
 
 <!-- NAVBAR -->
 <nav id="nav">
-  <a href="#" class="logo">Well<span>tion</span></a>
+  <a href="#" class="logo">
+  <img src="assets/images/logo.png" alt="Welltion Logo" class="nav-logo-img">
+</a>
   <ul class="nav-links">
     <li><a href="#layanan">Layanan</a></li>
     <li><a href="#portfolio">Portfolio</a></li>
@@ -129,6 +131,37 @@ html
     </div>
     <div class="cv-layout">
       <div class="cv-form-col">
+        <div class="cv-photo-section">
+  <div class="cv-photo-preview" id="cvPhotoPreview">
+    <span>👤</span>
+  </div>
+  <div class="cv-photo-controls">
+    <label class="cv-photo-upload-btn" for="cvPhotoInput">
+      📷 Upload Foto Profil
+    </label>
+    <input type="file" id="cvPhotoInput" accept="image/jpeg,image/png" style="display:none" onchange="handleCVPhoto(this)">
+    <p style="font-size:.72rem;color:var(--gray-400);margin-top:.3rem">Foto akan ditampilkan bulat di CV</p>
+  </div>
+</div>
+ 
+<!-- Crop Modal -->
+<div class="crop-overlay" id="cropOverlay">
+  <div class="crop-box">
+    <div class="crop-title">✂️ Sesuaikan Foto</div>
+    <div class="crop-canvas-wrap">
+      <canvas id="cropCanvas"></canvas>
+      <div class="crop-circle-mask"></div>
+    </div>
+    <div class="crop-controls">
+      <label style="font-size:.82rem;color:var(--gray-600)">Zoom</label>
+      <input type="range" id="cropZoom" min="0.5" max="3" step="0.01" value="1" oninput="updateCrop()">
+    </div>
+    <div class="crop-actions">
+      <button class="btn-p" onclick="applyCrop()" style="font-size:.85rem;padding:.6rem 1.4rem">✅ Terapkan</button>
+      <button class="btn-s" onclick="cancelCrop()" style="font-size:.85rem;padding:.6rem 1.4rem;color:var(--text-dark);border-color:var(--gray-200)">Batal</button>
+    </div>
+  </div>
+</div>
         <div class="fsec">Data Pribadi</div>
         <div class="fg"><label>Nama Lengkap *</label><input id="cn" placeholder="Budi Santoso" oninput="renderCV()"></div>
         <div class="fg"><label>Jabatan / Profesi</label><input id="ct" placeholder="Fresh Graduate | Marketing" oninput="renderCV()"></div>
@@ -316,6 +349,33 @@ html
     </ul>
     <a href="https://wa.me/6285167351196?text=Halo%20Welltion%2C%20saya%20mau%20tanya%20harga" class="btn-p" style="width:100%;justify-content:center;display:flex">💬 Tanya Harga via WhatsApp</a>
     <div class="pmethods"><span class="pbadge">💳 Transfer BCA</span><span class="pbadge">📱 GoPay</span></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     2. SECTION KARTU NAMA
+        Taruh setelah section pricing / sebelum section testimoni
+     ══════════════════════════════════════════════════════════ -->
+ 
+<section class="kartu-nama-section" id="kartu-nama">
+  <div class="kartu-nama-inner">
+    <div class="kartu-nama-text reveal">
+      <span class="slabel">Kartu Nama Digital</span>
+      <h2 class="stitle">Kenalan Lebih Dekat<br>dengan Welltion</h2>
+      <p class="ssub">Scan QR code atau simpan kartu nama digital kami. Selalu siap terhubung kapanpun kamu butuh.</p>
+      <div class="kartu-nama-actions">
+        <a href="https://wa.me/6285167351196?text=Halo%20Welltion%2C%20saya%20ingin%20konsultasi" class="btn-p" target="_blank">
+          💬 Chat WhatsApp
+        </a>
+        <a href="assets/images/kartu-nama.png" download="KartuNama-Welltion.png" class="btn-s" style="color:var(--text-dark);border-color:var(--gray-200)">
+          ⬇ Simpan Kartu Nama
+        </a>
+      </div>
+    </div>
+    <div class="kartu-nama-card reveal">
+      <img src="assets/images/kartu-nama.png" alt="Kartu Nama Welltion" class="kartu-nama-img">
+      <div class="kartu-nama-glow"></div>
+    </div>
   </div>
 </section>
 
@@ -527,5 +587,50 @@ html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="script.js"></script>
+
+<!-- ══════════════════════════════════════════════════════════
+     3. FLOATING SUPPORT BUTTON
+        Taruh sebelum </body> — di bawah WA sticky button
+     ══════════════════════════════════════════════════════════ -->
+ 
+<!-- Support Modal -->
+<div class="support-overlay" id="supportOverlay" onclick="closeSupportModal()">
+  <div class="support-modal" onclick="event.stopPropagation()">
+    <button class="support-modal-close" onclick="closeSupportModal()">✕</button>
+    <div class="support-modal-header">
+      <div class="support-heart">☕</div>
+      <h3>Dukung Welltion</h3>
+      <p>Terima kasih sudah menggunakan layanan kami! Dukungan kamu sangat berarti untuk terus berkembang.</p>
+    </div>
+    <div class="support-amounts">
+      <button class="support-amount-btn" onclick="supportPay(5000)">
+        <span class="support-emoji">🌱</span>
+        <span class="support-label">Rp5.000</span>
+        <span class="support-desc">Traktir kopi</span>
+      </button>
+      <button class="support-amount-btn" onclick="supportPay(10000)">
+        <span class="support-emoji">⭐</span>
+        <span class="support-label">Rp10.000</span>
+        <span class="support-desc">Traktir makan siang</span>
+      </button>
+      <button class="support-amount-btn active" onclick="supportPay(20000)">
+        <span class="support-emoji">💎</span>
+        <span class="support-label">Rp20.000</span>
+        <span class="support-desc">Super supporter!</span>
+      </button>
+    </div>
+    <a id="supportPayBtn" href="https://lynk.id/senyumnuwun/s/6JAPk9B" target="_blank" class="support-pay-btn">
+      ❤️ Dukung Sekarang via Lynk
+    </a>
+    <p class="support-note">Pembayaran aman via <strong>Lynk</strong> · QRIS · Transfer · dll</p>
+  </div>
+</div>
+ 
+<!-- Floating Support Button -->
+<div class="support-fab" onclick="openSupportModal()" title="Dukung Welltion">
+  <span class="support-fab-icon">☕</span>
+  <span class="support-fab-label">Dukung</span>
+</div>
+
 </body>
 </html>

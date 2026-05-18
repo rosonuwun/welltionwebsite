@@ -161,6 +161,9 @@ function setTpl(t, btn) {
 function gv(id) { return (document.getElementById(id) || {}).value || '' }
 function n2b(s) { return s.replace(/\n/g, '<br>') }
 
+/* ── UPDATE renderCV() — tambah foto ke template ──
+   Ganti fungsi renderCV() yang lama di script.js dengan ini */
+ 
 function renderCV() {
   const name = gv('cn') || 'Nama Lengkap'
   const title = gv('ct'), email = gv('ce'), phone = gv('cp')
@@ -168,25 +171,42 @@ function renderCV() {
   const sum = gv('csum'), exp = gv('cexp'), edu = gv('cedu')
   const sk = gv('csk'), ex = gv('cex')
   const contact = [email, phone, loc, li].filter(Boolean).join(' · ')
+  const photo = croppedPhotoDataURL
+ 
+  const photoCircle = photo
+    ? `<img src="${photo}" class="cv-photo-circle" alt="foto">`
+    : ''
+ 
   let h = ''
-
+ 
   if (tpl === 'min') {
+    // Minimalist: foto di kanan atas (pojok)
     h = `<div class="tpl-min">
-      <div class="cn">${name}</div>
-      ${title ? `<div style="font-size:11px;color:#666;margin-bottom:5px">${title}</div>` : ''}
-      <div class="ct">${contact}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <div class="cn">${name}</div>
+          ${title ? `<div style="font-size:11px;color:#666;margin-bottom:5px">${title}</div>` : ''}
+          <div class="ct">${contact}</div>
+        </div>
+        ${photo ? `<div style="flex-shrink:0;margin-left:12px">${photoCircle}</div>` : ''}
+      </div>
       ${sum ? `<div class="cs"><div class="cst">Profil</div>${n2b(sum)}</div>` : ''}
       ${exp ? `<div class="cs"><div class="cst">Pengalaman</div>${n2b(exp)}</div>` : ''}
       ${edu ? `<div class="cs"><div class="cst">Pendidikan</div>${n2b(edu)}</div>` : ''}
       ${sk ? `<div class="cs"><div class="cst">Keahlian</div>${sk}</div>` : ''}
       ${ex ? `<div class="cs"><div class="cst">Lainnya</div>${n2b(ex)}</div>` : ''}
     </div>`
+ 
   } else if (tpl === 'pro') {
+    // Professional: foto di header tengah atas
     h = `<div class="tpl-pro">
-      <div class="ch">
-        <div class="cn">${name}</div>
-        ${title ? `<div class="ct">${title}</div>` : ''}
-        <div class="ct" style="margin-top:4px">${contact}</div>
+      <div class="ch" style="display:flex;align-items:center;gap:1rem">
+        ${photo ? `<div style="flex-shrink:0">${photoCircle}</div>` : ''}
+        <div>
+          <div class="cn">${name}</div>
+          ${title ? `<div class="ct">${title}</div>` : ''}
+          <div class="ct" style="margin-top:4px">${contact}</div>
+        </div>
       </div>
       <div class="cb">
         ${sum ? `<div class="cs"><div class="cst">Profil</div>${n2b(sum)}</div>` : ''}
@@ -196,9 +216,12 @@ function renderCV() {
         ${ex ? `<div class="cs"><div class="cst">Lainnya</div>${n2b(ex)}</div>` : ''}
       </div>
     </div>`
+ 
   } else {
+    // Creative: foto di sidebar tengah
     h = `<div class="tpl-cre">
       <div class="csb">
+        ${photo ? `<div style="display:flex;justify-content:center;margin-bottom:10px">${photoCircle}</div>` : ''}
         <div class="cn">${name}</div>
         ${title ? `<div class="ct">${title}</div>` : ''}
         <div style="font-size:10px;color:rgba(255,255,255,.55);line-height:1.8">${[email, phone, loc, li].filter(Boolean).join('<br>')}</div>
@@ -378,3 +401,189 @@ document.addEventListener('DOMContentLoaded', () => {
   loadComments()
   renderCV()
 })
+
+/* ============================================================
+   TAMBAHKAN ke script.js — Support Modal + CV Photo Crop
+   ============================================================ */
+ 
+/* ── SUPPORT MODAL ── */
+let selectedAmount = 20000
+ 
+function openSupportModal() {
+  document.getElementById('supportOverlay').classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+ 
+function closeSupportModal() {
+  document.getElementById('supportOverlay').classList.remove('open')
+  document.body.style.overflow = ''
+}
+ 
+function supportPay(amount) {
+  selectedAmount = amount
+  // Update active button
+  document.querySelectorAll('.support-amount-btn').forEach(btn => btn.classList.remove('active'))
+  event.currentTarget.classList.add('active')
+  // Update pay button text
+  const payBtn = document.getElementById('supportPayBtn')
+  payBtn.textContent = `❤️ Dukung Rp${amount.toLocaleString('id-ID')} via Lynk`
+}
+ 
+// Init default
+document.addEventListener('DOMContentLoaded', () => {
+  const payBtn = document.getElementById('supportPayBtn')
+  if (payBtn) payBtn.textContent = `❤️ Dukung Rp20.000 via Lynk`
+})
+ 
+ 
+/* ── CV PHOTO CROP ── */
+let cropImg = null
+let cropOffsetX = 0
+let cropOffsetY = 0
+let cropZoom = 1
+let isDragging = false
+let dragStartX = 0
+let dragStartY = 0
+let croppedPhotoDataURL = null
+ 
+const CROP_SIZE = 280    // canvas display size
+const OUTPUT_SIZE = 300  // output circle size
+ 
+function handleCVPhoto(input) {
+  const file = input.files[0]
+  if (!file) return
+
+  // Validasi tipe file
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+  if (!allowedTypes.includes(file.type)) {
+    alert('Hanya file JPG, PNG yang diperbolehkan!')
+    input.value = ''
+    return
+  }
+
+  // Validasi ukuran max 2MB
+  if (file.size > 2 * 1024 * 1024) {
+    alert('Ukuran foto maksimal 5MB ya!')
+    input.value = ''
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = e => {
+    const img = new Image()
+    img.onload = () => {
+      cropImg = img
+      cropZoom = 1
+      cropOffsetX = 0
+      cropOffsetY = 0
+      document.getElementById('cropZoom').value = 1
+      document.getElementById('cropOverlay').classList.add('open')
+      document.body.style.overflow = 'hidden'
+      drawCrop()
+    }
+    img.src = e.target.result
+  }
+  reader.readAsDataURL(file)
+}
+ 
+function drawCrop() {
+  const canvas = document.getElementById('cropCanvas')
+  const ctx = canvas.getContext('2d')
+  canvas.width = CROP_SIZE
+  canvas.height = CROP_SIZE
+ 
+  ctx.clearRect(0, 0, CROP_SIZE, CROP_SIZE)
+ 
+  if (!cropImg) return
+ 
+  const scale = cropZoom * Math.max(CROP_SIZE / cropImg.width, CROP_SIZE / cropImg.height)
+  const w = cropImg.width * scale
+  const h = cropImg.height * scale
+ 
+  // Center + offset
+  const x = (CROP_SIZE - w) / 2 + cropOffsetX
+  const y = (CROP_SIZE - h) / 2 + cropOffsetY
+ 
+  ctx.drawImage(cropImg, x, y, w, h)
+}
+ 
+function updateCrop() {
+  cropZoom = parseFloat(document.getElementById('cropZoom').value)
+  drawCrop()
+}
+ 
+// Drag to reposition
+const cropWrap = document.querySelector('.crop-canvas-wrap')
+if (cropWrap) {
+  cropWrap.addEventListener('mousedown', e => {
+    isDragging = true
+    dragStartX = e.clientX - cropOffsetX
+    dragStartY = e.clientY - cropOffsetY
+  })
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return
+    cropOffsetX = e.clientX - dragStartX
+    cropOffsetY = e.clientY - dragStartY
+    drawCrop()
+  })
+  window.addEventListener('mouseup', () => { isDragging = false })
+ 
+  // Touch support
+  cropWrap.addEventListener('touchstart', e => {
+    isDragging = true
+    dragStartX = e.touches[0].clientX - cropOffsetX
+    dragStartY = e.touches[0].clientY - cropOffsetY
+  }, { passive: true })
+  window.addEventListener('touchmove', e => {
+    if (!isDragging) return
+    cropOffsetX = e.touches[0].clientX - dragStartX
+    cropOffsetY = e.touches[0].clientY - dragStartY
+    drawCrop()
+  }, { passive: true })
+  window.addEventListener('touchend', () => { isDragging = false })
+}
+ 
+function applyCrop() {
+  // Render ke canvas output bulat
+  const outCanvas = document.createElement('canvas')
+  outCanvas.width = OUTPUT_SIZE
+  outCanvas.height = OUTPUT_SIZE
+  const ctx = outCanvas.getContext('2d')
+ 
+  // Clip lingkaran
+  ctx.beginPath()
+  ctx.arc(OUTPUT_SIZE / 2, OUTPUT_SIZE / 2, OUTPUT_SIZE / 2, 0, Math.PI * 2)
+  ctx.closePath()
+  ctx.clip()
+ 
+  // Scale dari crop canvas ke output
+  const ratio = OUTPUT_SIZE / CROP_SIZE
+  const scale = cropZoom * Math.max(CROP_SIZE / cropImg.width, CROP_SIZE / cropImg.height) * ratio
+  const w = cropImg.width * scale
+  const h = cropImg.height * scale
+  const x = (OUTPUT_SIZE - w) / 2 + cropOffsetX * ratio
+  const y = (OUTPUT_SIZE - h) / 2 + cropOffsetY * ratio
+ 
+  ctx.drawImage(cropImg, x, y, w, h)
+ 
+  croppedPhotoDataURL = outCanvas.toDataURL('image/png')
+ 
+  // Update preview di form
+  const preview = document.getElementById('cvPhotoPreview')
+  preview.innerHTML = `<img src="${croppedPhotoDataURL}" alt="Foto profil">`
+  preview.classList.add('has-photo')
+ 
+  // Tutup crop modal
+  document.getElementById('cropOverlay').classList.remove('open')
+  document.body.style.overflow = ''
+ 
+  // Re-render CV dengan foto baru
+  renderCV()
+}
+ 
+function cancelCrop() {
+  document.getElementById('cropOverlay').classList.remove('open')
+  document.body.style.overflow = ''
+  document.getElementById('cvPhotoInput').value = ''
+}
+ 
