@@ -55,7 +55,19 @@ html
   <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
   <div class="hgrid"></div>
   <div class="hcontent">
-    <div class="badge">Salam Senyum dari Welltion</div>
+    <!-- ══════════════════════════════════════════════════════════
+     1. HERO SECTION — tambah logo + tulisan sebelum badge
+        Taruh SEBELUM <div class="badge">Salam Senyum...</div>
+     ══════════════════════════════════════════════════════════ -->
+ 
+    <div class="hero-brand reveal-fast">
+      <img src="assets/images/logo.png" alt="Welltion Logo" class="hero-logo-img">
+      <div class="hero-brand-text">
+        <span class="hero-brand-name">Well<span>tion</span></span>
+        <span class="hero-brand-tagline">Administrative Support</span>
+      </div>
+    </div>
+    <div class="badge">salamsenyum :) dari Welltion</div>
     <h1>Dokumen Profesional,<br><span class="hl">Tanpa Ribet.</span></h1>
     <p class="hsub">Dari CV hingga company profile — kami bantu susun dokumen kamu jadi lebih rapi, jelas, dan siap digunakan. Konsultasi dulu, bayar setelah puas.</p>
     <div class="hact">
@@ -109,6 +121,16 @@ html
       <h3>Company Profile</h3>
       <p>Profil perusahaan yang representatif — struktur, layanan, dan visual yang merepresentasikan identitas bisnismu.</p>
       <span class="svc-tag">Untuk perusahaan</span>
+      <!-- ══════════════════════════════════════════════════════════
+     2. KARTU NAMA BUILDER — tambah tombol di service card
+        Cari service card Company Profile, tambah button ini
+        setelah <span class="svc-tag">Untuk perusahaan</span>
+     ══════════════════════════════════════════════════════════ -->
+
+      <br>
+      <button class="cv-open-btn" style="background:#6366f1" onclick="openKartunama()">
+      🪪 Buat Kartu Nama Gratis
+      </button>
     </div>
     <div class="svc-card reveal">
       <div class="svc-icon">📊</div>
@@ -189,6 +211,77 @@ html
       <div class="cv-preview-col">
         <div class="cv-prev-lbl">Preview Langsung</div>
         <div id="cvPrev"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     3. KARTU NAMA BUILDER MODAL
+        Taruh sebelum </body>, setelah CV modal
+     ══════════════════════════════════════════════════════════ -->
+ 
+<div class="modal-ov" id="knModal">
+  <div class="modal-box" style="max-width:1000px">
+    <button class="modal-x" onclick="closeKartunama()">✕</button>
+    <div class="modal-title">🪪 Kartu Nama Builder Gratis</div>
+    <div class="modal-sub">Buat kartu nama landscape profesional (8,26 × 5,03 cm). Isi data, pilih template, download PNG.</div>
+ 
+    <!-- Template Picker -->
+    <div class="tpl-row">
+      <button class="tpl-btn active" onclick="setKNTpl('clean',this)">⬜ Clean Minimalist</button>
+      <button class="tpl-btn" onclick="setKNTpl('modern',this)">🔷 Modern Dark</button>
+    </div>
+ 
+    <div class="cv-layout">
+      <!-- Form -->
+      <div class="cv-form-col">
+        <div class="fsec">Logo Perusahaan</div>
+        <div class="kn-logo-upload-wrap">
+          <div class="kn-logo-preview" id="knLogoPreview">
+            <span>🏢</span>
+          </div>
+          <div>
+            <label class="cv-photo-upload-btn" for="knLogoInput" style="background:#6366f1">
+              📁 Upload Logo
+            </label>
+            <input type="file" id="knLogoInput" accept="image/jpeg,image/png,image/webp,image/svg+xml" style="display:none" onchange="handleKNLogo(this)">
+            <p style="font-size:.72rem;color:var(--gray-400);margin-top:.3rem">JPG, PNG, WebP, SVG · Maks 5MB</p>
+          </div>
+        </div>
+ 
+        <div class="fsec">Informasi</div>
+        <div class="fg"><label>Nama Perusahaan *</label><input id="knCompany" placeholder="PT. Nama Perusahaan" oninput="renderKN()"></div>
+        <div class="fg"><label>Tagline</label><input id="knTagline" placeholder="Simple Support, Better Productivity" oninput="renderKN()"></div>
+        <div class="fg"><label>Nama Pemilik *</label><input id="knName" placeholder="Ghifari" oninput="renderKN()"></div>
+        <div class="fg"><label>Jabatan</label><input id="knRole" placeholder="Founder & CEO" oninput="renderKN()"></div>
+ 
+        <div class="fsec">Kontak</div>
+        <div class="fg"><label>No. WhatsApp / HP</label><input id="knPhone" placeholder="0851 6735 1196" oninput="renderKN()"></div>
+        <div class="fg"><label>Email</label><input id="knEmail" placeholder="welltion8@gmail.com" oninput="renderKN()"></div>
+        <div class="fg"><label>Instagram</label><input id="knIg" placeholder="@welltion.ketik" oninput="renderKN()"></div>
+        <div class="fg"><label>Website</label><input id="knWeb" placeholder="welltion.netlify.app" oninput="renderKN()"></div>
+ 
+        <div class="cv-dl-row" style="margin-top:1rem">
+          <button class="btn-p" onclick="downloadKN()" style="font-size:.85rem;padding:.65rem 1.4rem;background:#6366f1;box-shadow:0 0 20px rgba(99,102,241,.3)">
+            ⬇ Download PNG
+          </button>
+        </div>
+        <p style="font-size:.75rem;color:var(--gray-400);margin-top:.4rem">
+          Butuh desain custom? <a href="https://wa.me/6285167351196?text=Saya%20butuh%20kartu%20nama%20custom%20dari%20Welltion" style="color:#6366f1">Chat Welltion →</a>
+        </p>
+      </div>
+ 
+      <!-- Preview -->
+      <div class="cv-preview-col">
+        <div class="cv-prev-lbl">Preview Langsung</div>
+        <!-- Canvas untuk render kartu nama dengan rasio 8.26:5.03 -->
+        <div class="kn-preview-wrap">
+          <canvas id="knCanvas"></canvas>
+        </div>
+        <p style="font-size:.72rem;color:var(--gray-400);margin-top:.5rem;text-align:center">
+          Ukuran cetak: 8,26 × 5,03 cm (landscape)
+        </p>
       </div>
     </div>
   </div>
@@ -324,6 +417,24 @@ html
           <div class="port-card-arrow">↗</div>
         </div>
       </div>
+
+      <div class="port-card reveal" onclick="openDrive('1L8nCHkxXcvEHBzkg6LL76PKKvvpixm9f','https://drive.google.com/file/d/1L8nCHkxXcvEHBzkg6LL76PKKvvpixm9f/view')">
+  <div class="port-card-thumb">
+    <img src="https://drive.google.com/thumbnail?id=1L8nCHkxXcvEHBzkg6LL76PKKvvpixm9f&sz=w400" alt="Portfolio 6" loading="lazy" onerror="this.parentElement.innerHTML='<div class=port-thumb-fallback>🎬</div>'">
+    <div class="port-card-overlay">
+      <span class="port-view-btn">▶ Lihat Video</span>
+    </div>
+  </div>
+  <div class="port-card-body">
+    <div class="port-card-icon">🎬</div>
+    <div class="port-card-info">
+      <div class="port-card-name">Portfolio 6</div>
+      <div class="port-card-type">Video · Dokumen Welltion</div>
+    </div>
+    <div class="port-card-arrow">↗</div>
+  </div>
+</div>
+  
  
     </div>
   </div>

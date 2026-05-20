@@ -964,3 +964,103 @@ nav {
   letter-spacing: -.02em;
 }
 .logo-accent { color: var(--emerald); }
+
+/* ============================================================
+   BATCH 3 CSS — Hero Brand, Kartu Nama Builder, Fixes
+   Tambahkan di bagian bawah style.css
+   ============================================================ */
+
+/* ── FIX: WA label tidak halangi klik support btn ── */
+.wa-lbl { pointer-events: none; }
+
+/* ── 1. HERO BRAND (Logo + Welltion sebelum badge) ── */
+.hero-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: 1.8rem;
+}
+.hero-logo-img {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  animation: fu .6s ease .05s both;
+}
+.hero-brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .1rem;
+}
+.hero-brand-name {
+  font-family: var(--fd);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.03em;
+  line-height: 1;
+}
+.hero-brand-name span { color: var(--emerald); }
+.hero-brand-tagline {
+  font-size: .78rem;
+  color: rgba(255,255,255,.45);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.reveal-fast {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.reveal-fast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── 2. KARTU NAMA BUILDER ── */
+.kn-logo-upload-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .8rem;
+  background: var(--gray-100);
+  border-radius: 12px;
+  margin-bottom: .3rem;
+}
+.kn-logo-preview {
+  width: 64px; height: 64px;
+  border-radius: 10px;
+  background: #fff;
+  border: 2px dashed var(--gray-200);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color .2s;
+}
+.kn-logo-preview img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+}
+.kn-logo-preview.has-logo { border-color: #6366f1; border-style: solid; }
+
+.kn-preview-wrap {
+  width: 100%;
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--gray-100);
+}
+.kn-preview-wrap canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Indigo accent untuk kartu nama ── */
+.kn-modal-accent { color: #6366f1; }
+
+.wa-lbl { pointer-events: none; }

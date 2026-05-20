@@ -587,3 +587,306 @@ function cancelCrop() {
   document.getElementById('cvPhotoInput').value = ''
 }
  
+/* ============================================================
+   BATCH 3 JS — Kartu Nama Builder
+   Tambahkan di bagian bawah script.js
+   ============================================================ */
+
+/* ── KARTU NAMA BUILDER ── */
+let knTpl = 'clean'
+let knLogoDataURL = null
+
+// Rasio kartu nama landscape: 8.26 x 5.03 cm
+// Canvas internal: 826 x 503 px (1px = 0.1cm, 96dpi friendly)
+const KN_W = 992  // 8.26cm * 120
+const KN_H = 604  // 5.03cm * 120
+
+function openKartunama() {
+  document.getElementById('knModal').classList.add('open')
+  document.body.style.overflow = 'hidden'
+  renderKN()
+}
+
+function closeKartunama() {
+  document.getElementById('knModal').classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+function setKNTpl(t, btn) {
+  knTpl = t
+  document.querySelectorAll('#knModal .tpl-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  renderKN()
+}
+
+function handleKNLogo(input) {
+  const file = input.files[0]
+  if (!file) return
+  const allowed = ['image/jpeg','image/png','image/webp','image/svg+xml']
+  if (!allowed.includes(file.type)) {
+    alert('Hanya JPG, PNG, WebP, atau SVG!')
+    input.value = ''
+    return
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    alert('Ukuran logo maksimal 5MB ya!')
+    input.value = ''
+    return
+  }
+  const reader = new FileReader()
+  reader.onload = e => {
+    knLogoDataURL = e.target.result
+    const prev = document.getElementById('knLogoPreview')
+    prev.innerHTML = `<img src="${knLogoDataURL}" alt="logo">`
+    prev.classList.add('has-logo')
+    renderKN()
+  }
+  reader.readAsDataURL(file)
+}
+
+function knGv(id) { return (document.getElementById(id)||{}).value||'' }
+
+function renderKN() {
+  const canvas = document.getElementById('knCanvas')
+  if (!canvas) return
+  canvas.width = KN_W
+  canvas.height = KN_H
+  const ctx = canvas.getContext('2d')
+
+  const company = knGv('knCompany') || 'Nama Perusahaan'
+  const tagline  = knGv('knTagline')
+  const name     = knGv('knName') || 'Nama Kamu'
+  const role     = knGv('knRole')
+  const phone    = knGv('knPhone')
+  const email    = knGv('knEmail')
+  const ig       = knGv('knIg')
+  const web      = knGv('knWeb')
+
+  if (knTpl === 'clean') {
+    drawKNClean(ctx, { company, tagline, name, role, phone, email, ig, web })
+  } else {
+    drawKNModern(ctx, { company, tagline, name, role, phone, email, ig, web })
+  }
+}
+
+/* ── Template 1: Clean Minimalist ── */
+function drawKNClean(ctx, d) {
+  const W = KN_W, H = KN_H
+
+  // Background putih
+  ctx.fillStyle = '#ffffff'
+  ctx.fillRect(0, 0, W, H)
+
+  // Accent line kiri
+  ctx.fillStyle = '#10b981'
+  ctx.fillRect(0, 0, 6, H)
+
+  // Subtle wave pattern kanan bawah
+  ctx.save()
+  ctx.globalAlpha = 0.04
+  ctx.fillStyle = '#0a0f1e'
+  ctx.beginPath()
+  ctx.ellipse(W * 0.85, H * 0.8, 260, 160, -0.3, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.beginPath()
+  ctx.ellipse(W * 0.9, H * 0.5, 200, 120, -0.2, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+
+  // Logo (kiri atas)
+  const logoY = 52
+  let textStartX = 48
+
+  if (knLogoDataURL) {
+    const logoImg = new Image()
+    logoImg.src = knLogoDataURL
+    const lSize = 80
+    ctx.save()
+    ctx.drawImage(logoImg, 40, logoY - lSize/2, lSize, lSize)
+    ctx.restore()
+    textStartX = 140
+  }
+
+  // Nama perusahaan
+  ctx.fillStyle = '#0f172a'
+  ctx.font = `bold ${knLogoDataURL ? 28 : 32}px "Sora", sans-serif`
+  ctx.fillText(d.company, textStartX, logoY + 6)
+
+  // Tagline
+  if (d.tagline) {
+    ctx.fillStyle = '#10b981'
+    ctx.font = `400 16px "DM Sans", sans-serif`
+    ctx.fillText(d.tagline, textStartX, logoY + 30)
+  }
+
+  // Divider
+  ctx.strokeStyle = '#e2e8f0'
+  ctx.lineWidth = 1.5
+  ctx.beginPath()
+  ctx.moveTo(40, H / 2 - 20)
+  ctx.lineTo(W - 40, H / 2 - 20)
+  ctx.stroke()
+
+  // Nama pemilik
+  ctx.fillStyle = '#0f172a'
+  ctx.font = `bold 30px "Sora", sans-serif`
+  ctx.fillText(d.name, 40, H / 2 + 20)
+
+  // Jabatan
+  if (d.role) {
+    ctx.fillStyle = '#64748b'
+    ctx.font = `400 18px "DM Sans", sans-serif`
+    ctx.fillText(d.role, 40, H / 2 + 46)
+  }
+
+  // Kontak — baris bawah
+  ctx.fillStyle = '#334155'
+  ctx.font = `400 16px "DM Sans", sans-serif`
+  const contacts = []
+  if (d.phone) contacts.push(`📱 ${d.phone}`)
+  if (d.email) contacts.push(`✉ ${d.email}`)
+  if (d.ig)    contacts.push(`ig: ${d.ig}`)
+  if (d.web)   contacts.push(`🌐 ${d.web}`)
+
+  const colW = (W - 80) / 2
+  contacts.forEach((c, i) => {
+    const col = i % 2
+    const row = Math.floor(i / 2)
+    ctx.fillText(c, 40 + col * colW, H - 90 + row * 28)
+  })
+
+  // Watermark kecil welltion
+  ctx.fillStyle = 'rgba(16,185,129,0.25)'
+  ctx.font = `500 13px "Sora", sans-serif`
+  ctx.textAlign = 'right'
+  ctx.fillText('— salamsenyum :)', W - 30, H - 22)
+  ctx.textAlign = 'left'
+}
+
+/* ── Template 2: Modern Dark ── */
+function drawKNModern(ctx, d) {
+  const W = KN_W, H = KN_H
+
+  // Background dark navy
+  ctx.fillStyle = '#0a0f1e'
+  ctx.fillRect(0, 0, W, H)
+
+  // Glow kiri
+  const gradL = ctx.createRadialGradient(0, H/2, 0, 0, H/2, 400)
+  gradL.addColorStop(0, 'rgba(37,99,235,0.25)')
+  gradL.addColorStop(1, 'transparent')
+  ctx.fillStyle = gradL
+  ctx.fillRect(0, 0, W, H)
+
+  // Glow kanan
+  const gradR = ctx.createRadialGradient(W, H, 0, W, H, 350)
+  gradR.addColorStop(0, 'rgba(16,185,129,0.2)')
+  gradR.addColorStop(1, 'transparent')
+  ctx.fillStyle = gradR
+  ctx.fillRect(0, 0, W, H)
+
+  // Sidebar kiri emerald
+  const grad = ctx.createLinearGradient(0, 0, 0, H)
+  grad.addColorStop(0, '#10b981')
+  grad.addColorStop(1, '#059669')
+  ctx.fillStyle = grad
+  ctx.fillRect(0, 0, 8, H)
+
+  // Logo area (kiri atas)
+  let nameX = 40
+  if (knLogoDataURL) {
+    const logoImg = new Image()
+    logoImg.src = knLogoDataURL
+    // Invert logo untuk dark background
+    ctx.save()
+    ctx.filter = 'brightness(0) invert(1)'
+    ctx.drawImage(logoImg, 30, 36, 70, 70)
+    ctx.filter = 'none'
+    ctx.restore()
+    nameX = 116
+  }
+
+  // Nama perusahaan
+  ctx.fillStyle = '#ffffff'
+  ctx.font = `bold 28px "Sora", sans-serif`
+  ctx.fillText(d.company, nameX, 70)
+
+  // Tagline
+  if (d.tagline) {
+    ctx.fillStyle = '#34d399'
+    ctx.font = `400 15px "DM Sans", sans-serif`
+    ctx.fillText(d.tagline, nameX, 94)
+  }
+
+  // Divider
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)'
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(30, H/2 - 30)
+  ctx.lineTo(W - 30, H/2 - 30)
+  ctx.stroke()
+
+  // Nama pemilik
+  ctx.fillStyle = '#ffffff'
+  ctx.font = `bold 32px "Sora", sans-serif`
+  ctx.fillText(d.name, 30, H/2 + 16)
+
+  // Jabatan
+  if (d.role) {
+    ctx.fillStyle = '#34d399'
+    ctx.font = `500 17px "DM Sans", sans-serif`
+    ctx.fillText(d.role, 30, H/2 + 42)
+  }
+
+  // Kontak
+  ctx.fillStyle = 'rgba(255,255,255,0.65)'
+  ctx.font = `400 15px "DM Sans", sans-serif`
+  const contacts = []
+  if (d.phone) contacts.push(`📱 ${d.phone}`)
+  if (d.email) contacts.push(`✉ ${d.email}`)
+  if (d.ig)    contacts.push(`ig: ${d.ig}`)
+  if (d.web)   contacts.push(`🌐 ${d.web}`)
+
+  const colW = (W - 60) / 2
+  contacts.forEach((c, i) => {
+    const col = i % 2
+    const row = Math.floor(i / 2)
+    ctx.fillText(c, 30 + col * colW, H - 90 + row * 28)
+  })
+
+  // Watermark
+  ctx.fillStyle = 'rgba(52,211,153,0.3)'
+  ctx.font = `400 13px "Sora", sans-serif`
+  ctx.textAlign = 'right'
+  ctx.fillText('— salamsenyum :)', W - 24, H - 20)
+  ctx.textAlign = 'left'
+}
+
+/* ── DOWNLOAD KARTU NAMA ── */
+function downloadKN() {
+  const canvas = document.getElementById('knCanvas')
+  if (!canvas) return
+
+  // Render ulang sekali lagi untuk pastikan up to date
+  renderKN()
+
+  setTimeout(() => {
+    const link = document.createElement('a')
+    link.download = 'KartuNama-Welltion.png'
+    link.href = canvas.toDataURL('image/png', 1.0)
+    link.click()
+    showToast('✅ Kartu nama berhasil didownload!')
+  }, 100)
+}
+
+/* ── HERO BRAND reveal ── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Reveal hero brand
+  setTimeout(() => {
+    const hb = document.querySelector('.hero-brand')
+    if (hb) hb.classList.add('visible')
+  }, 100)
+
+  // Init kartu nama canvas
+  renderKN()
+})
