@@ -1,0 +1,282 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f6f7f5;
+  color: #202520;
+  min-height: 100vh;
+}
+
+.topbar {
+  height: 72px;
+  background: white;
+  border-bottom: 1px solid #e5e8e3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6%;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #202520;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+
+.brand strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.brand span {
+  display: block;
+  font-size: .72rem;
+  color: #7b817b;
+}
+
+.top-date {
+  color: #7b817b;
+  font-size: .85rem;
+}
+
+.dashboard {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+  padding: 45px 0 70px;
+}
+
+.greeting {
+  margin-bottom: 30px;
+}
+
+.eyebrow {
+  color: #7b817b;
+  font-size: .7rem;
+  letter-spacing: 1.5px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.greeting h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 8px;
+}
+
+.greeting p:last-child {
+  color: #777;
+}
+
+.score-card {
+  background: white;
+  border: 1px solid #e5e8e3;
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-label {
+  font-size: .7rem;
+  letter-spacing: 1.5px;
+  color: #7b817b;
+  font-weight: bold;
+}
+
+.score-number {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 8px 0;
+}
+
+.score-change {
+  color: #5c765f;
+  font-size: .85rem;
+}
+
+.score-circle {
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  border: 9px solid #dfe5df;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #e5e8e3;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.stat-card span {
+  font-size: 1.4rem;
+}
+
+.stat-card p {
+  color: #777;
+  font-size: .8rem;
+  margin: 12px 0 5px;
+}
+
+.stat-card strong {
+  font-size: 1.4rem;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #e5e8e3;
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.panel-header h2 {
+  font-size: 1.3rem;
+}
+
+.add-btn {
+  border: 0;
+  background: #202520;
+  color: white;
+  border-radius: 9px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 35px 10px;
+  color: #777;
+}
+
+.empty-state div {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+.empty-state span {
+  font-size: .85rem;
+}
+
+.areas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.area-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 17px;
+  background: #f8f9f7;
+  border-radius: 13px;
+}
+
+.area-card > span {
+  font-size: 1.5rem;
+}
+
+.area-card > div {
+  flex: 1;
+}
+
+.area-card strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.area-card small {
+  color: #777;
+}
+
+.progress {
+  height: 7px;
+  background: #e2e5e1;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.progress div {
+  height: 100%;
+  background: #5c765f;
+  border-radius: inherit;
+}
+
+@media (max-width: 700px) {
+
+  .topbar {
+    padding: 0 4%;
+  }
+
+  .top-date {
+    display: none;
+  }
+
+  .dashboard {
+    width: 92%;
+    padding-top: 30px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .areas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .score-card {
+    padding: 22px;
+  }
+
+  .score-number {
+    font-size: 3rem;
+  }
+
+  .score-circle {
+    width: 85px;
+    height: 85px;
+  }
+}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Welltion Life OS</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">W</div>
+      <div>
+        <strong>Welltion</strong>
+        <span>Life OS</span>
+      </div>
+    </div>
+
+    <div class="top-date" id="currentDate"></div>
+  </header>
+
+
+  <main class="dashboard">
+
+    <!-- GREETING -->
+    <section class="greeting">
+      <p class="eyebrow">YOUR PERSONAL OPERATING SYSTEM</p>
+      <h1>Good morning 👋</h1>
+      <p>Let's make today count.</p>
+    </section>
+
+
+    <!-- LIFE SCORE -->
+    <section class="score-card">
+      <div>
+        <p class="card-label">LIFE SCORE</p>
+        <div class="score-number">78</div>
+        <p class="score-change">↑ 4% from last week</p>
+      </div>
+
+      <div class="score-circle">
+        <span>78%</span>
+      </div>
+    </section>
+
+
+    <!-- QUICK STATS -->
+    <section class="stats-grid">
+
+      <div class="stat-card">
+        <span>🎯</span>
+        <p>Goals</p>
+        <strong>0</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>✅</span>
+        <p>Tasks Today</p>
+        <strong>0</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>🔄</span>
+        <p>Habit Streak</p>
+        <strong>0</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>💰</span>
+        <p>Balance</p>
+        <strong>Rp0</strong>
+      </div>
+
+    </section>
+
+
+    <!-- TODAY -->
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">TODAY</p>
+          <h2>Today's Tasks</h2>
+        </div>
+
+        <button class="add-btn">+ Add Task</button>
+      </div>
+
+      <div class="empty-state">
+        <div>✨</div>
+        <p>No tasks for today.</p>
+        <span>Your day is clear. Enjoy the moment.</span>
+      </div>
+    </section>
+
+
+    <!-- LIFE AREAS -->
+    <section class="panel">
+
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">YOUR LIFE</p>
+          <h2>Life Areas</h2>
+        </div>
+      </div>
+
+      <div class="areas-grid">
+
+        <div class="area-card">
+          <span>🏃</span>
+          <div>
+            <strong>Health</strong>
+            <div class="progress">
+              <div style="width: 82%"></div>
+            </div>
+            <small>82%</small>
+          </div>
+        </div>
+
+        <div class="area-card">
+          <span>💰</span>
+          <div>
+            <strong>Finance</strong>
+            <div class="progress">
+              <div style="width: 70%"></div>
+            </div>
+            <small>70%</small>
+          </div>
+        </div>
+
+        <div class="area-card">
+          <span>💼</span>
+          <div>
+            <strong>Career</strong>
+            <div class="progress">
+              <div style="width: 88%"></div>
+            </div>
+            <small>88%</small>
+          </div>
+        </div>
+
+        <div class="area-card">
+          <span>📚</span>
+          <div>
+            <strong>Learning</strong>
+            <div class="progress">
+              <div style="width: 76%"></div>
+            </div>
+            <small>76%</small>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
